@@ -21,8 +21,8 @@ A step-by-step guide to building VArch — a minimal DSL for architecture diagra
 ## Phase 1: Project Setup & Foundation (Week 1)
 
 ### 1.1 Initialize Project Structure
-- [ ] Choose framework (React recommended for component-based architecture)
-- [ ] Set up project with Vite: `npm create vite@latest varch -- --template react`
+- [X] Choose framework (Vue.js + Vite)
+- [X] Set up project with Vite: `npm create vite@latest . -- --template vue` <--- (not Run the Command)
 - [ ] Install core dependencies:
   - `dagre` or `dagre-d3` for graph layout
   - `d3` or `react-flow` for SVG rendering (optional)
