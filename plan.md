@@ -10,11 +10,11 @@ A step-by-step guide to building VArch — a minimal DSL for architecture diagra
 
 **Tech Stack Recommendations**:
 - **Frontend Framework**: Vue.js + Vite
-- **Parser**: Custom parser or a library like PEG.js/Chevrotain
+- **Parser**: Custom parser 
 - **Layout Engine**: Dagre.js (for automatic graph layout)
 - **Rendering**: SVG (via D3.js, React, or native SVG)
-- **Build Tool**: Vite (fast, simple) or Create React App
-- **Styling**: CSS/Tailwind for UI
+- **Build Tool**: Vite (fast, simple)
+- **Styling**: Tailwind for UI
 
 ---
 
