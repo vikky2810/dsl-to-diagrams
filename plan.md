@@ -22,12 +22,12 @@ A step-by-step guide to building VArch — a minimal DSL for architecture diagra
 
 ### 1.1 Initialize Project Structure
 - [X] Choose framework (Vue.js + Vite)
-- [X] Set up project with Vite: `npm create vite@latest . -- --template vue` <--- (not Run the Command)
-- [ ] Install core dependencies:
-  - `dagre` or `dagre-d3` for graph layout
-  - `d3` or `react-flow` for SVG rendering (optional)
-  - `zustand` or `react-context` for state management
-- [ ] Set up folder structure:
+- [X] Set up project with Vite: `npm create vite@latest . -- --template vue`
+- [X] Install core dependencies:
+  - `dagre` for graph layout
+  - `d3` for SVG rendering
+  - Vue's built-in reactivity for state management (no external library needed)
+- [X] Set up folder structure:
   ```
   src/
     components/     # UI components
