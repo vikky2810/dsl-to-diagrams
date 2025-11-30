@@ -1,342 +1,178 @@
-# VArch Development Plan
+## 1. Lock the Scope (MVP)
 
-A step-by-step guide to building VArch — a minimal DSL for architecture diagrams.
+Keep the first version tight. Your MVP should support:
 
----
+* Parsing basic DSL (nodes, text, connects)
+* Rendering nodes + edges in SVG
+* Auto layout using Dagre/ELK
+* Real-time preview (editor → render)
 
-## Project Overview
+That’s it. Don’t touch themes, exporting, or sharing yet.
 
-**Goal**: Build a web application that parses a simple DSL and renders architecture diagrams in real-time.
+## 2. Break the App Into Clear Modules
 
-**Tech Stack Recommendations**:
-- **Frontend Framework**: Vue.js + Vite
-- **Parser**: Custom parser 
-- **Layout Engine**: Dagre.js (for automatic graph layout)
-- **Rendering**: SVG (via D3.js, React, or native SVG)
-- **Build Tool**: Vite (fast, simple)
-- **Styling**: Tailwind for UI
+### A) **DSL Parser**
 
----
+Goal: Convert plain text into a structured AST.
 
-## Phase 1: Project Setup & Foundation (Week 1)
+Implement these commands first:
 
-### 1.1 Initialize Project Structure
-- [X] Choose framework (Vue.js + Vite)
-- [X] Set up project with Vite: `npm create vite@latest . -- --template vue`
-- [X] Install core dependencies:
-  - `dagre` for graph layout
-  - `d3` for SVG rendering
-  - Vue's built-in reactivity for state management (no external library needed)
-- [X] Set up folder structure:
-  ```
-  src/
-    components/     # UI components
-    parser/         # DSL parser
-    renderer/       # Diagram renderer
-    utils/          # Helper functions
-    styles/         # CSS/styling
-  ```
+* `db id "label"`
+* `svc id "label"`
+* `ui id "label"`
+* `queue id "label"`
+* `text id "note"`
+* `id1 -> id2 "optional label"`
+* `connect id1 -> id2 "optional label"`
 
-### 1.2 Basic UI Shell
-- [ ] Create main layout with:
-  - Split pane: Editor (left) + Preview (right)
-  - Textarea for DSL input
-  - Canvas/div for diagram output
-- [ ] Add basic styling (responsive layout)
-- [ ] Set up state management for editor content
+Parser steps:
 
----
+1. Tokenize each line.
+2. Match patterns using regex.
+3. Produce an AST like:
 
-## Phase 2: DSL Parser (Week 1-2)
+   ```js
+   {
+     nodes: [{ id, type, label, notes: [] }],
+     edges: [{ from, to, label }]
+   }
+   ```
 
-### 2.1 Define Grammar
-- [ ] Document the grammar formally:
-  - Node declarations: `db|svc|ui|queue <id> "<label>"`
-  - Text annotations: `text <id> "<description>"`
-  - Connections: `connect <id1> -> <id2> ["<label>"]` or `<id1> -> <id2> ["<label>"]`
+### B) **Graph Builder**
 
-### 2.2 Build Parser
-- [ ] Option A: Write a simple recursive descent parser
-- [ ] Option B: Use PEG.js to generate parser from grammar
-- [ ] Parse commands into tokens/statements
-- [ ] Handle edge cases:
-  - Empty lines
-  - Comments (optional: `# comment`)
-  - Invalid syntax (graceful error handling)
+Takes the AST → builds an internal graph model ready for layout.
 
-### 2.3 Build AST (Abstract Syntax Tree)
-- [ ] Define AST node types:
-  - `NodeDeclaration` (type, id, label)
-  - `TextAnnotation` (nodeId, text)
-  - `Connection` (from, to, label?)
-- [ ] Transform parsed tokens into AST
-- [ ] Validate AST (check node references exist)
+* Add nodes with default sizes.
+* Attach notes.
+* Add edges with direction and optional labels.
 
-### 2.4 Test Parser
-- [ ] Create test cases for:
-  - Valid DSL examples
-  - Invalid syntax
-  - Edge cases (empty input, missing quotes, etc.)
-- [ ] Write unit tests (Jest/Vitest)
+### C) **Layout Engine**
 
----
+Use Dagre first (simple + stable).
 
-## Phase 3: Graph Model Builder (Week 2)
+Flow:
 
-### 3.1 Build Graph Data Structure
-- [ ] Create graph model:
-  - Nodes: `{ id, type, label, texts: [] }`
-  - Edges: `{ from, to, label? }`
-- [ ] Build graph from AST:
-  - Collect all node declarations
-  - Attach text annotations to nodes
-  - Build edge list from connections
-
-### 3.2 Validate Graph
-- [ ] Check for:
-  - Duplicate node IDs
-  - References to non-existent nodes
-  - Circular dependencies (optional, for warnings)
-
----
-
-## Phase 4: Layout Engine Integration (Week 2-3)
-
-### 4.1 Integrate Dagre
-- [ ] Install `dagre` and `dagre-d3` (or use standalone)
-- [ ] Configure Dagre:
-  - Set node dimensions (width, height)
-  - Configure spacing (ranksep, nodesep)
-  - Choose layout direction (TB, LR, etc.)
-
-### 4.2 Calculate Layout
-- [ ] Convert graph model to Dagre format
-- [ ] Run layout algorithm
-- [ ] Extract positions for nodes and edges
-- [ ] Store layout result in state
-
----
-
-## Phase 5: SVG Renderer (Week 3-4)
-
-### 5.1 Basic Node Rendering
-- [ ] Create SVG group for each node
-- [ ] Draw node shapes based on type:
-  - `db`: Cylinder or rounded rectangle
-  - `svc`: Rectangle with service icon/style
-  - `ui`: Rounded rectangle or browser-like shape
-  - `queue`: Horizontal bar or cloud shape
-- [ ] Add labels inside/under nodes
-- [ ] Style nodes (colors, borders)
-
-### 5.2 Edge Rendering
-- [ ] Draw edges using Dagre positions
-- [ ] Use SVG paths (curved or straight)
-- [ ] Add arrowheads at target
-- [ ] Render edge labels (if present)
-- [ ] Style edges (colors, stroke width)
-
-### 5.3 Text Annotations
-- [ ] Render text annotations near nodes
-  - Option: Tooltip on hover
-  - Option: Small text boxes below nodes
-  - Option: Expandable notes
-- [ ] Position annotations relative to nodes
-
-### 5.4 Styling & Polish
-- [ ] Add hover effects
-- [ ] Add node selection (optional)
-- [ ] Ensure readable fonts and spacing
-- [ ] Make diagram responsive
-
----
-
-## Phase 6: Real-Time Preview (Week 4)
-
-### 6.1 Live Updates
-- [ ] Debounce editor input (200-300ms)
-- [ ] Re-parse on change
-- [ ] Re-render diagram when AST changes
-- [ ] Handle errors gracefully (show in UI)
-
-### 6.2 Error Display
-- [ ] Show parse errors in UI
-- [ ] Highlight invalid lines (optional)
-- [ ] Display friendly error messages
-
----
-
-## Phase 7: UI Enhancements (Week 5)
-
-### 7.1 Theme Support
-- [ ] Implement dark/light theme toggle
-- [ ] Create theme variables (CSS variables)
-- [ ] Apply theme to:
-  - Editor (syntax highlighting optional)
-  - Diagram (node colors, backgrounds)
-  - UI controls
-
-### 7.2 Export Functionality
-- [ ] Copy as SVG:
-  - Get SVG element
-  - Copy to clipboard
-- [ ] Export as PNG:
-  - Convert SVG to canvas
-  - Use `html2canvas` or similar
-  - Download as PNG
-- [ ] Export as `.varch` file:
-  - Download current DSL as text file
-
-### 7.3 Import Functionality
-- [ ] File upload for `.varch` files
-- [ ] Load content into editor
-- [ ] Validate on import
-
----
-
-## Phase 8: Advanced Features (Week 6)
-
-### 8.1 Snippets/Templates
-- [ ] Create common patterns:
-  - API → Service → DB
-  - Microservices pattern
-  - Event-driven architecture
-- [ ] Add snippet picker UI
-- [ ] Insert snippet into editor
-
-### 8.2 Auto-Layout Improvements
-- [ ] Allow layout direction toggle (top-down, left-right)
-- [ ] Adjust spacing controls
-- [ ] Handle large graphs (clustering, pagination?)
-
-### 8.3 Sharing (Optional)
-- [ ] Encode diagram in URL (base64 or compressed)
-- [ ] Shareable links
-- [ ] Or: Save to localStorage for persistence
-
----
-
-## Phase 9: Testing & Polish (Week 7)
-
-### 9.1 Testing
-- [ ] Unit tests for parser
-- [ ] Integration tests for renderer
-- [ ] E2E tests for main flows (optional)
-- [ ] Test with various diagram sizes
-
-### 9.2 Performance
-- [ ] Optimize re-renders (React.memo, useMemo)
-- [ ] Handle large diagrams (virtualization if needed)
-- [ ] Debounce/throttle expensive operations
-
-### 9.3 Documentation
-- [ ] Add inline code comments
-- [ ] Update README with setup instructions
-- [ ] Create example diagrams
-- [ ] Add keyboard shortcuts (optional)
-
-### 9.4 Deployment
-- [ ] Build for production
-- [ ] Deploy to:
-  - GitHub Pages
-  - Vercel
-  - Netlify
-  - Or any static host
-
----
-
-## Implementation Tips
-
-### Parser Approach
-**Simple Recursive Descent Parser** (Recommended for MVP):
-```javascript
-function parseDSL(input) {
-  const lines = input.split('\n').filter(l => l.trim());
-  const ast = { nodes: [], edges: [], texts: [] };
-  
-  for (const line of lines) {
-    if (line.match(/^(db|svc|ui|queue)\s+\w+\s+".+"/)) {
-      // Parse node declaration
-    } else if (line.match(/^text\s+\w+\s+".+"/)) {
-      // Parse text annotation
-    } else if (line.match(/\w+\s*->\s*\w+/)) {
-      // Parse connection
-    }
-  }
-  
-  return ast;
-}
+```
+AST → Graph Model → Dagre Layout → Coordinates
 ```
 
-### Rendering Approach
-**Option 1: React + SVG** (Component-based):
-- Each node is a React component
-- Edges are SVG paths
-- Easy to manage state and updates
+Each node will get:
 
-**Option 2: D3.js** (Data-driven):
-- More control over animations
-- Better for complex interactions
-- Steeper learning curve
+```js
+{ x, y, width, height }
+```
 
-**Option 3: React Flow** (Pre-built):
-- Fastest to implement
-- Less customization
+Same for edges (list of points).
 
-### State Management
-- **Simple**: React useState/useReducer
-- **Medium**: Context API
-- **Complex**: Zustand or Redux (probably overkill)
+### D) **Renderer (SVG)**
 
----
+Render a clean diagram:
 
-## Quick Start Checklist
+* Rectangles for services/UI
+* Cylinder shape for DB
+* Rounded box for queues
+* Edge arrows + labels
+* Notes under nodes with smaller text
 
-1. ✅ Read this plan
-2. ✅ Set up project (Phase 1)
-3. ✅ Build parser (Phase 2)
-4. ✅ Test with simple example
-5. ✅ Integrate layout (Phase 4)
-6. ✅ Render basic diagram (Phase 5)
-7. ✅ Add real-time updates (Phase 6)
-8. ✅ Polish and deploy (Phase 7-9)
+Keep everything minimal and monochrome for MVP.
+
+### E) **Web App UI**
+
+Your Vue setup:
+
+* **Editor.vue** — code input with v-model (Monaco recommended later)
+* **DiagramRender.vue** — reads parsed DSL and draws SVG
+* Debounce 200ms for live updates
+
+That's the full first version.
 
 ---
 
-## Example Development Flow
+## 3. Version 2 — Fast Quality Improvements
 
-1. **Start with the simplest case**:
-   ```
-   db db1 "Test DB"
-   svc api "Test API"
-   api -> db1
-   ```
+### Add Features:
 
-2. **Get it rendering** before adding complexity
+* Light/Dark theme toggle
+* Export SVG/PNG
+* Auto-save to localStorage
+* Error messages inline (e.g., undefined node)
+* Snippets (API → Service → DB)
 
-3. **Iterate**: Add one feature at a time
+### UI Enhancements:
 
-4. **Test frequently** with real examples
-
----
-
-## Estimated Timeline
-
-- **MVP (Phases 1-6)**: 3-4 weeks (part-time)
-- **Full Features (Phases 1-9)**: 6-7 weeks (part-time)
-- **With polish & testing**: 8-10 weeks (part-time)
-
-**Full-time development**: 2-3 weeks for MVP, 4-5 weeks for full version.
+* Vertical split: editor left, preview right
+* Zoom & Pan inside SVG
+* Node highlighting on hover
 
 ---
 
-## Next Steps
+## 4. Version 3 — Power User Mode
 
-1. Choose your tech stack
-2. Set up the project (Phase 1)
-3. Start with the parser (Phase 2) — this is the foundation
-4. Build incrementally, test as you go
-5. Get a basic diagram rendering before adding features
+Now you fix convenience:
 
-Good luck! 🚀
+* `.varch` file import/export
+* Shareable encoded URLs
+* Custom node types (cache, load balancer, auth, etc.)
+* Color tokens (optional)
+* Diagram presets (microservices map, pipeline diagram)
 
+---
+
+## 5. Stretch Ideas (When it grows)
+
+* AI-powered DSL generation for architecture written in plain English
+* Drag nodes → auto-generate DSL back
+* Save diagrams on cloud (Supabase / Firestore)
+* Plugin system for custom node shapes
+* "Pro mode" with keyboard shortcuts and templates
+
+---
+
+## 6. Suggested Timeline
+
+### **Week 1**
+
+* Build DSL parser
+* Build AST + basic model
+
+### **Week 2**
+
+* Dagre layout integration
+* Render node shapes in SVG
+
+### **Week 3**
+
+* Real-time preview integration in Vue
+* Basic error handling
+* Publish MVP
+
+### **Week 4**
+
+* Dark/light theme
+* Export features
+* UX polish
+
+---
+
+## 7. What You Should Build First (Today)
+
+Start small:
+
+1. Write the parser for nodes + edges
+2. Print parsed JSON in the console
+3. Hook that into a minimal render (just boxes + arrows)
+4. Integrate in your Vue components
+
+Even a crude diagram is progress.
+
+---
+
+If you want, I can create:
+
+* A proper technical roadmap
+* Folder structure
+* Step-by-step tasks with checklists
+* Actual Vue files for Editor + DiagramRender ready to paste
+* A spec for the parser grammar
+
+Tell me what you want next.
