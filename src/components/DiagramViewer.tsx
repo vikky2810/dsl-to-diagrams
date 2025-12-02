@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import type { AST } from '../types'
 import { buildLayout, NODE_WIDTH, NODE_HEIGHT } from '../utils/layout'
 import styles from './DiagramViewer.module.css'
@@ -36,6 +37,8 @@ const NODE_COLORS: Record<string, { fill: string; stroke: string; gradient: [str
 }
 
 export function DiagramViewer({ ast }: DiagramViewerProps) {
+    const svgRef = useRef<SVGSVGElement>(null)
+
     if (ast.nodes.length === 0) {
         return (
             <div className={styles.container}>
@@ -52,15 +55,106 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
 
     const layout = buildLayout(ast)
 
-    return (
+    const downloadDiagram = async (format: 'png' | 'jpg') => {
+        if (!svgRef.current) return
 
-        <div className={styles.svgContainer}>
-            <svg
-                width="100%"
-                height="100%"
-                viewBox={`0 0 ${layout.width} ${layout.height}`}
-                className={styles.svg}
-            >
+        const svg = svgRef.current.cloneNode(true) as SVGSVGElement
+        
+        // Use a scale factor for higher resolution (2x for crisp images)
+        const scale = 2
+        const scaledWidth = layout.width * scale
+        const scaledHeight = layout.height * scale
+        
+        // Set explicit width and height for better rendering at higher resolution
+        svg.setAttribute('width', scaledWidth.toString())
+        svg.setAttribute('height', scaledHeight.toString())
+        svg.setAttribute('viewBox', `0 0 ${layout.width} ${layout.height}`)
+        
+        const svgData = new XMLSerializer().serializeToString(svg)
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+        const url = URL.createObjectURL(svgBlob)
+
+        const img = new Image()
+        img.onload = () => {
+            const canvas = document.createElement('canvas')
+            // Set canvas to scaled dimensions for high resolution
+            canvas.width = scaledWidth
+            canvas.height = scaledHeight
+            const ctx = canvas.getContext('2d', { 
+                willReadFrequently: false,
+                alpha: format === 'png'
+            })
+
+            if (!ctx) {
+                URL.revokeObjectURL(url)
+                return
+            }
+
+            // Enable image smoothing for better quality
+            ctx.imageSmoothingEnabled = true
+            ctx.imageSmoothingQuality = 'high'
+
+            // Fill white background for JPG (transparency not supported)
+            if (format === 'jpg') {
+                ctx.fillStyle = '#ffffff'
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+            }
+
+            // Draw the image at the scaled size (SVG will render at 2x resolution)
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight)
+
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    URL.revokeObjectURL(url)
+                    return
+                }
+
+                const downloadUrl = URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = downloadUrl
+                link.download = `diagram.${format}`
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                URL.revokeObjectURL(downloadUrl)
+                URL.revokeObjectURL(url)
+            }, format === 'png' ? 'image/png' : 'image/jpeg', 1.0)
+        }
+
+        img.onerror = () => {
+            URL.revokeObjectURL(url)
+            console.error('Failed to load SVG for download')
+        }
+
+        img.src = url
+    }
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.controls}>
+                <button
+                    className={styles.downloadButton}
+                    onClick={() => downloadDiagram('png')}
+                    title="Download as PNG"
+                >
+                    📥 Download PNG
+                </button>
+                <button
+                    className={styles.downloadButton}
+                    onClick={() => downloadDiagram('jpg')}
+                    title="Download as JPG"
+                >
+                    📥 Download JPG
+                </button>
+            </div>
+            <div className={styles.svgContainer}>
+                <svg
+                    ref={svgRef}
+                    width="100%"
+                    height="100%"
+                    viewBox={`0 0 ${layout.width} ${layout.height}`}
+                    className={styles.svg}
+                >
                 <defs>
                     {/* Gradient definitions for each node type */}
                     {Object.entries(NODE_COLORS).map(([type, colors]) => (
@@ -249,6 +343,6 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                 </g>
             </svg>
         </div>
-
+        </div>
     )
 }
