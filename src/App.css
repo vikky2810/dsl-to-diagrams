@@ -1,99 +1,56 @@
-.app-container {
+.app {
   display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  overflow: hidden;
   gap: 0;
 }
 
-.editor-panel,
-.preview-panel {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  border-right: 1px solid #333;
+.editor-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--glass-border);
 }
 
-.preview-panel {
-  border-right: none;
-  border-left: 1px solid #333;
-}
-
-h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 1.5em;
-}
-
-.dsl-editor {
-  width: 100%;
-  height: calc(100vh - 120px);
-  padding: 12px;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  border: 1px solid #444;
-  border-radius: 4px;
-  background-color: #1a1a1a;
-  color: #fff;
-  resize: none;
-  outline: none;
-}
-
-.dsl-editor:focus {
-  border-color: #646cff;
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  animation: slideInRight 0.6s ease;
 }
 
 .preview-content {
-  height: calc(100vh - 120px);
+  flex: 1;
   overflow-y: auto;
+  padding: var(--spacing-xl);
 }
 
-.info-box {
-  background-color: #1a1a1a;
-  padding: 16px;
-  border-radius: 4px;
-  border: 1px solid #333;
-}
-
-.info-box h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 1.2em;
-}
-
-.info-box p {
-  margin: 8px 0;
-}
-
-.info-box ul {
-  margin: 8px 0;
-  padding-left: 24px;
-}
-
-.info-box li {
-  margin: 4px 0;
-}
-
-@media (prefers-color-scheme: light) {
-  .editor-panel,
-  .preview-panel {
-    border-right-color: #ddd;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
   }
-  
-  .preview-panel {
-    border-left-color: #ddd;
+
+  .editor-section {
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
   }
-  
-  .dsl-editor {
-    background-color: #fff;
-    color: #213547;
-    border-color: #ddd;
-  }
-  
-  .dsl-editor:focus {
-    border-color: #646cff;
-  }
-  
-  .info-box {
-    background-color: #f9f9f9;
-    border-color: #ddd;
+}
+
+@media (max-width: 768px) {
+  .preview-content {
+    padding: var(--spacing-lg);
   }
 }

@@ -1,0 +1,150 @@
+import { useState, useRef, useEffect } from 'react'
+import styles from './EditorPanel.module.css'
+
+type EditorPanelProps = {
+    value: string
+    onChange: (value: string) => void
+}
+
+export function EditorPanel({ value, onChange }: EditorPanelProps) {
+    const [lineCount, setLineCount] = useState(0)
+    const [charCount, setCharCount] = useState(0)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const highlightLayerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const lines = value.split('\n').length
+        const chars = value.length
+        setLineCount(lines)
+        setCharCount(chars)
+    }, [value])
+
+    useEffect(() => {
+        const textarea = textareaRef.current
+        const highlightLayer = highlightLayerRef.current
+        if (!textarea || !highlightLayer) return
+
+        const handleScroll = () => {
+            highlightLayer.scrollTop = textarea.scrollTop
+            highlightLayer.scrollLeft = textarea.scrollLeft
+        }
+
+        textarea.addEventListener('scroll', handleScroll)
+        return () => textarea.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    const highlightedContent = value
+        .split('\n')
+        .map((line, idx) => {
+            if (!line.trim()) {
+                return `<div class="line"><span class="line-number">${idx + 1}</span> </div>`
+            }
+
+            let result = ''
+            let i = 0
+            let inString = false
+
+            const isWordChar = (char: string) => /[a-zA-Z0-9_]/.test(char)
+            const keywords = ['db', 'svc', 'ui', 'queue', 'text', 'connect']
+
+            while (i < line.length) {
+                // Handle string quotes
+                if (line[i] === '"' && (i === 0 || line[i - 1] !== '\\')) {
+                    if (!inString) {
+                        inString = true
+                        result += `<span class="string">"`
+                        i++
+                        continue
+                    } else {
+                        inString = false
+                        result += `"</span>`
+                        i++
+                        continue
+                    }
+                }
+
+                // Inside string — just escape characters
+                if (inString) {
+                    const char = line[i]
+                    if (char === '&') result += '&amp;'
+                    else if (char === '<') result += '&lt;'
+                    else if (char === '>') result += '&gt;'
+                    else result += char
+
+                    i++
+                    continue
+                }
+
+                // Arrow (->)
+                if (i < line.length - 1 && line[i] === '-' && line[i + 1] === '>') {
+                    result += '<span class="arrow">-&gt;</span>'
+                    i += 2
+                    continue
+                }
+
+                // Keywords
+                let keywordMatched = false
+                for (const keyword of keywords) {
+                    if (i + keyword.length <= line.length) {
+                        const substr = line.substring(i, i + keyword.length)
+                        if (substr === keyword) {
+                            const before = i === 0 ? true : !isWordChar(line[i - 1])
+                            const after = i + keyword.length >= line.length ? true : !isWordChar(line[i + keyword.length])
+
+                            if (before && after) {
+                                result += `<span class="keyword">${keyword}</span>`
+                                i += keyword.length
+                                keywordMatched = true
+                                break
+                            }
+                        }
+                    }
+                }
+                if (keywordMatched) continue
+
+                // Regular char
+                const char = line[i]
+                if (char === '&') result += '&amp;'
+                else if (char === '<') result += '&lt;'
+                else if (char === '>') result += '&gt;'
+                else result += char
+
+                i++
+            }
+
+            return `<div class="line"><span class="line-number">${idx + 1}</span>${result}</div>`
+        })
+        .join('')
+
+    return (
+        <div className={styles.panel}>
+            <div className={styles.header}>
+                <h2 className={styles.title}>DSL Editor</h2>
+                <div className={styles.stats}>
+                    <span className={styles.stat}>
+                        <span className={styles.statLabel}>Lines:</span> {lineCount}
+                    </span>
+                    <span className={styles.stat}>
+                        <span className={styles.statLabel}>Chars:</span> {charCount}
+                    </span>
+                </div>
+            </div>
+
+            <div className={styles.editorContainer}>
+                <div
+                    ref={highlightLayerRef}
+                    className={styles.highlightLayer}
+                    dangerouslySetInnerHTML={{ __html: highlightedContent }}
+                />
+                <textarea
+                    ref={textareaRef}
+                    className={styles.editor}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Enter your DSL here..."
+                    spellCheck={false}
+                />
+            </div>
+        </div>
+    )
+}
