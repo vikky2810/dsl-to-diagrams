@@ -3,8 +3,8 @@ import { parseDSL } from './utils/parser'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { Header } from './components/Header'
 import { EditorPanel } from './components/EditorPanel'
-import { ASTSummary } from './components/ASTSummary'
-import { ASTDebugView } from './components/ASTDebugView'
+// import { ASTSummary } from './components/ASTSummary'
+// import { ASTDebugView } from './components/ASTDebugView'
 import { DiagramViewer } from './components/DiagramViewer'
 import './App.css'
 
@@ -31,11 +31,7 @@ function AppContent() {
         </div>
 
         <div className="preview-section">
-          <div className="preview-content">
-            <ASTSummary ast={parsed.ast} lineCount={parsed.lineCount} />
             <DiagramViewer ast={parsed.ast} />
-            <ASTDebugView ast={parsed.ast} />
-          </div>
         </div>
       </div>
     </div>
