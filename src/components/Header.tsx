@@ -9,7 +9,7 @@ export function Header() {
             <div className={styles.content}>
                 <div>
                     <h1 className={styles.title}>
-                        <span className={styles.gradientText}>DSL</span> Architecture Editor
+                        <span className={styles.gradientText}>Varch</span> - Visual Architecture Editor
                     </h1>
                     <p className={styles.subtitle}>
                         Design and visualize your system architecture with ease
