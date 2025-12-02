@@ -31,6 +31,7 @@ function AppContent() {
         </div>
 
         <div className="preview-section">
+
             <DiagramViewer ast={parsed.ast} />
         </div>
       </div>
