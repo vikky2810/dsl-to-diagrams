@@ -107,16 +107,33 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                     {/* Edges */}
                     <g className={styles.edges}>
                         {layout.edges.map((edge, idx) => {
-                            const x1 = edge.from.x + NODE_WIDTH / 2
-                            const y1 = edge.from.y + NODE_HEIGHT / 2
-                            const x2 = edge.to.x + NODE_WIDTH / 2
-                            const y2 = edge.to.y + NODE_HEIGHT / 2
+                            // FIX: Resolve the actual node objects using the IDs from the edge
+                            // This handles cases where edge.from is a string ID ("api") OR an object
+                            const sourceId = typeof edge.from === 'string' ? edge.from : edge.from.id;
+                            const targetId = typeof edge.to === 'string' ? edge.to : edge.to.id;
+
+                            const sourceNode = layout.nodes.find(n => n.id === sourceId);
+                            const targetNode = layout.nodes.find(n => n.id === targetId);
+
+                            // If we can't find the nodes, don't render this edge
+                            if (!sourceNode || !targetNode) return null;
+
+                            const x1 = sourceNode.x + NODE_WIDTH / 2
+                            const y1 = sourceNode.y + NODE_HEIGHT / 2
+                            const x2 = targetNode.x + NODE_WIDTH / 2
+                            const y2 = targetNode.y + NODE_HEIGHT / 2
+
+                            // Midpoints for the label
                             const mx = (x1 + x2) / 2
                             const my = (y1 + y2) / 2
+
+                            // Arrow calculations
                             const angle = Math.atan2(y2 - y1, x2 - x1)
                             const arrowSize = 8
+                            // Offset arrow slightly from the center of the destination node
                             const arrowX = x2 - Math.cos(angle) * (NODE_WIDTH / 2 + 8)
                             const arrowY = y2 - Math.sin(angle) * (NODE_HEIGHT / 2 + 8)
+
                             const arrowLeftX = arrowX - arrowSize * Math.cos(angle - Math.PI / 6)
                             const arrowLeftY = arrowY - arrowSize * Math.sin(angle - Math.PI / 6)
                             const arrowRightX = arrowX - arrowSize * Math.cos(angle + Math.PI / 6)
@@ -126,37 +143,39 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                             const labelY = my - 12
 
                             return (
-                                <g key={idx}>
+                                <g key={`${sourceId}-${targetId}-${idx}`}>
                                     <line
                                         x1={x1}
                                         y1={y1}
                                         x2={x2}
                                         y2={y2}
-                                        stroke="url(#gradient-svc)"
+                                        // FIX: Use a solid color first to ensure visibility. 
+                                        // Gradients on 1px lines can often disappear or look invisible.
+                                        stroke="#94a3b8"
                                         strokeWidth={2}
                                         opacity={0.6}
                                     />
                                     <polygon
-                                        points={`${arrowX + 6},${arrowY} ${arrowLeftX},${arrowLeftY} ${arrowRightX},${arrowRightY}`}
-                                        fill="#8b5cf6"
+                                        points={`${arrowX + 4},${arrowY} ${arrowLeftX},${arrowLeftY} ${arrowRightX},${arrowRightY}`}
+                                        fill="#94a3b8"
                                         opacity={0.8}
                                     />
                                     {edge.label && (
                                         <g>
                                             <rect
-                                                x={labelX - (edge.label.length * 3.5)}
+                                                x={labelX - (edge.label.length * 4)}
                                                 y={labelY - 10}
-                                                width={edge.label.length * 7}
+                                                width={edge.label.length * 8}
                                                 height={20}
-                                                fill="rgba(0, 0, 0, 0.7)"
-                                                stroke="rgba(139, 92, 246, 0.5)"
+                                                fill="rgba(15, 23, 42, 0.9)" // Darker background for readability
+                                                stroke="rgba(148, 163, 184, 0.5)"
                                                 strokeWidth={1}
                                                 rx={4}
                                             />
                                             <text
                                                 x={labelX}
                                                 y={labelY}
-                                                fill="#e0e7ff"
+                                                fill="#e2e8f0"
                                                 fontSize={11}
                                                 fontWeight={500}
                                                 textAnchor="middle"
