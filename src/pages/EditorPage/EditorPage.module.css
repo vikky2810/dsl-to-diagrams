@@ -1,0 +1,131 @@
+/* Editor Page Styles */
+
+.editor {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-primary);
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.headerLeft,
+.headerRight {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.headerRight {
+    justify-content: flex-end;
+}
+
+.headerCenter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.logoIcon {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+}
+
+.logoText {
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.backLink:hover {
+    color: var(--color-text-primary);
+    background: var(--color-surface-hover);
+}
+
+.themeToggle {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.themeToggle:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: var(--color-surface-hover);
+}
+
+/* Editor Container */
+.editorContainer {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.editorPane {
+    flex: 1;
+    min-width: 0;
+    border-right: 1px solid var(--color-border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.previewPane {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editorContainer {
+        flex-direction: column;
+    }
+
+    .editorPane {
+        flex: 0 0 50%;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .previewPane {
+        flex: 0 0 50%;
+    }
+
+    .headerCenter {
+        display: none;
+    }
+}
