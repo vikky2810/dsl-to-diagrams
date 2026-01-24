@@ -2,52 +2,155 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-right: 1px solid var(--glass-border);
-    animation: slideInLeft 0.6s ease;
+    background: linear-gradient(180deg,
+            rgba(15, 15, 25, 0.95) 0%,
+            rgba(10, 10, 18, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(99, 102, 241, 0.15);
+    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle gradient overlay for depth */
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.08) 0%,
+            transparent 100%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .header {
     padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(90deg,
+            rgba(99, 102, 241, 0.06) 0%,
+            transparent 50%,
+            rgba(236, 72, 153, 0.04) 100%);
+    position: relative;
+    z-index: 1;
+}
+
+/* Animated underline accent */
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--spacing-xl);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg,
+            var(--color-primary) 0%,
+            var(--color-accent) 100%);
+    border-radius: 2px;
+    opacity: 0.8;
 }
 
 .title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
-    color: var(--color-text-primary);
+    background: linear-gradient(135deg,
+            var(--color-text-primary) 0%,
+            rgba(255, 255, 255, 0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.title::before {
+    content: '⌘';
+    font-size: 0.9rem;
+    padding: 0.35rem 0.5rem;
+    background: linear-gradient(135deg,
+            rgba(99, 102, 241, 0.2) 0%,
+            rgba(236, 72, 153, 0.15) 100%);
+    border-radius: var(--radius-sm);
+    -webkit-text-fill-color: var(--color-primary-light);
 }
 
 .stats {
     display: flex;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
 }
 
 .stat {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    color: var(--color-text-tertiary);
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all var(--transition-fast);
+}
+
+.stat:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.2);
 }
 
 .statLabel {
     color: var(--color-text-tertiary);
-    font-weight: 500;
+    font-weight: 400;
+    margin-right: 0.25rem;
 }
 
 .editorContainer {
     position: relative;
     flex: 1;
     overflow: hidden;
-    /* Create a stacking context */
-    isolation: isolate; 
+    isolation: isolate;
+    background: linear-gradient(135deg,
+            rgba(8, 8, 16, 0.9) 0%,
+            rgba(12, 12, 22, 0.95) 100%);
+    margin: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Common settings for both layers to ensure perfect alignment */
+/* Subtle inner glow effect */
+.editorContainer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    padding: 1px;
+    background: linear-gradient(135deg,
+            rgba(99, 102, 241, 0.15) 0%,
+            transparent 50%,
+            rgba(236, 72, 153, 0.1) 100%);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Common settings for both layers */
 .highlightLayer,
 .editor {
     position: absolute;
@@ -58,10 +161,9 @@
     width: 100%;
     height: 100%;
     padding: var(--spacing-lg);
-    /* Indent text to make room for line numbers in the gutter */
-    padding-left: calc(40px + var(--spacing-lg) + var(--spacing-md));
-    
-    font-family: var(--font-mono);
+    padding-left: calc(48px + var(--spacing-lg));
+
+    font-family: 'JetBrains Mono', 'Fira Code', var(--font-mono);
     font-size: 14px;
     line-height: 1.6;
     white-space: pre-wrap;
@@ -69,48 +171,62 @@
     tab-size: 4;
     -moz-tab-size: 4;
     overflow-wrap: break-word;
+    letter-spacing: 0.01em;
 }
 
 .highlightLayer {
     pointer-events: none;
-    overflow: hidden; /* Only textarea scrolls */
-    /* FIX: Base text must be visible, unlike the textarea */
-    color: var(--color-text-primary); 
+    overflow: hidden;
+    color: var(--color-text-primary);
     z-index: 1;
 }
 
 .highlightLayer :global(.line) {
-    position: relative; /* Anchor for the absolute line number */
+    position: relative;
     min-height: 1.6em;
+    padding: 0;
+    transition: background var(--transition-fast);
 }
 
+.highlightLayer :global(.line:hover) {
+    background: rgba(99, 102, 241, 0.06);
+}
+
+/* VS Code style line numbers - clean and simple */
 .highlightLayer :global(.line-number) {
     position: absolute;
-    /* Move left into the padded gutter area */
-    left: calc(-1 * (40px + var(--spacing-md))); 
-    width: 40px;
-    
-    color: var(--color-text-tertiary);
+    left: calc(-48px - var(--spacing-lg) + 8px);
+    width: 32px;
+
+    /* Simple, muted appearance like VS Code */
+    color: rgba(133, 133, 150, 0.5);
     user-select: none;
     text-align: right;
-    font-size: 0.85em;
-    /* Center vertically relative to line-height */
-    line-height: 1.6rem; 
-    top: 0;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.6;
+
+    transition: color var(--transition-fast);
 }
 
+/* Subtle highlight on hover */
+.highlightLayer :global(.line:hover .line-number) {
+    color: rgba(133, 133, 150, 0.9);
+}
+
+/* Enhanced syntax highlighting */
 .highlightLayer :global(.keyword) {
-    color: var(--color-primary-light);
-    font-weight: 600;
+    color: #c586c0;
+    font-weight: 500;
 }
 
 .highlightLayer :global(.string) {
-    color: var(--color-accent-light);
+    color: #ce9178;
 }
 
 .highlightLayer :global(.arrow) {
-    color: #4ade80;
-    font-weight: 600;
+    color: #569cd6;
+    font-weight: 500;
 }
 
 .editor {
@@ -119,25 +235,121 @@
     border: none;
     outline: none;
     resize: none;
-    
-    /* FIX: Make text transparent so we see the layer below */
-    color: transparent; 
-    /* FIX: Keep the cursor visible and colored */
-    caret-color: var(--color-primary); 
+    color: transparent;
+    caret-color: #aeafad;
 }
 
 .editor::placeholder {
     color: var(--color-text-tertiary);
-    opacity: 0.6;
+    opacity: 0.5;
+    font-style: italic;
 }
 
 .editor:focus {
-    /* Apply background to container, not textarea, to avoid hiding highlight layer */
-    background: transparent; 
+    background: transparent;
 }
 
 /* Custom Scrollbar */
 .editor::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
+}
+
+.editor::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.editor::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.4) 0%,
+            rgba(99, 102, 241, 0.2) 100%);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.editor::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.6) 0%,
+            rgba(99, 102, 241, 0.4) 100%);
+}
+
+/* Focus state for the whole panel */
+.panel:focus-within .editorContainer {
+    border-color: rgba(99, 102, 241, 0.2);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+/* Light theme adjustments */
+:global([data-theme="light"]) .panel {
+    background: linear-gradient(180deg,
+            rgba(248, 250, 252, 0.98) 0%,
+            rgba(241, 245, 249, 0.99) 100%);
+    border-right-color: rgba(99, 102, 241, 0.15);
+}
+
+:global([data-theme="light"]) .panel::before {
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.05) 0%,
+            transparent 100%);
+}
+
+:global([data-theme="light"]) .header {
+    background: linear-gradient(90deg,
+            rgba(99, 102, 241, 0.04) 0%,
+            transparent 50%,
+            rgba(236, 72, 153, 0.03) 100%);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme="light"]) .title {
+    background: linear-gradient(135deg,
+            rgba(15, 23, 42, 1) 0%,
+            rgba(30, 41, 59, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+:global([data-theme="light"]) .stat {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.06);
+    color: var(--color-text-secondary);
+}
+
+:global([data-theme="light"]) .editorContainer {
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(248, 250, 252, 0.98) 100%);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="light"]) .highlightLayer :global(.line-number) {
+    color: rgba(100, 100, 120, 0.5);
+}
+
+:global([data-theme="light"]) .highlightLayer :global(.line:hover .line-number) {
+    color: rgba(100, 100, 120, 0.85);
+}
+
+:global([data-theme="light"]) .highlightLayer :global(.keyword) {
+    color: #af00db;
+}
+
+:global([data-theme="light"]) .highlightLayer :global(.string) {
+    color: #a31515;
+}
+
+:global([data-theme="light"]) .highlightLayer :global(.arrow) {
+    color: #0000ff;
+}
+
+:global([data-theme="light"]) .editor {
+    caret-color: #000000;
 }
