@@ -72,7 +72,8 @@ export function LandingPage() {
             {/* Hero Section */}
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
-                    <div className={styles.heroText}>
+                    {/* Left Column - Text */}
+                    <div className={styles.heroLeft}>
                         <h1 className={styles.heroTitle}>
                             Write Architecture as Code.
                             <span className={styles.heroTitleAccent}> See It Instantly.</span>
@@ -90,50 +91,89 @@ export function LandingPage() {
                                 View Example DSL
                             </a>
                         </div>
-                    </div>
-                    <div className={styles.heroVisual}>
-                        <div className={styles.codePreview}>
-                            <div className={styles.codeHeader}>
-                                <span className={styles.codeDot} />
-                                <span className={styles.codeDot} />
-                                <span className={styles.codeDot} />
-                                <span className={styles.codeFilename}>architecture.varch</span>
+
+                        {/* Quick Stats */}
+                        <div className={styles.heroStats}>
+                            <div className={styles.stat}>
+                                <span className={styles.statValue}>4</span>
+                                <span className={styles.statLabel}>Node Types</span>
                             </div>
-                            <pre className={styles.codeContent}>
-                                {`db users "User Database"
+                            <div className={styles.stat}>
+                                <span className={styles.statValue}>0ms</span>
+                                <span className={styles.statLabel}>Render Delay</span>
+                            </div>
+                            <div className={styles.stat}>
+                                <span className={styles.statValue}>∞</span>
+                                <span className={styles.statLabel}>Scalable SVG</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Visual Demo */}
+                    <div className={styles.heroRight}>
+                        <div className={styles.demoContainer}>
+                            {/* Code Panel */}
+                            <div className={styles.codePreview}>
+                                <div className={styles.codeHeader}>
+                                    <span className={styles.codeDot} />
+                                    <span className={styles.codeDot} />
+                                    <span className={styles.codeDot} />
+                                    <span className={styles.codeFilename}>architecture.varch</span>
+                                </div>
+                                <pre className={styles.codeContent}>
+                                    {`db users "User Database"
 svc auth "Auth Service"
 ui web "Frontend App"
 
 auth -> users "Read/Write"
 web -> auth`}
-                            </pre>
-                        </div>
-                        <div className={styles.arrowConnector}>→</div>
-                        <div className={styles.diagramPreview}>
-                            <svg viewBox="0 0 200 150" className={styles.diagramSvg}>
-                                {/* Frontend App */}
-                                <rect x="70" y="10" width="60" height="30" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                                <text x="100" y="29" textAnchor="middle" fontSize="8" fill="currentColor">Frontend App</text>
+                                </pre>
+                            </div>
 
-                                {/* Auth Service */}
-                                <rect x="70" y="60" width="60" height="30" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                                <text x="100" y="79" textAnchor="middle" fontSize="8" fill="currentColor">Auth Service</text>
+                            {/* Arrow */}
+                            <div className={styles.arrowConnector}>
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12,5 19,12 12,19" />
+                                </svg>
+                            </div>
 
-                                {/* User Database (Cylinder) */}
-                                <ellipse cx="100" cy="115" rx="30" ry="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                                <path d="M70 115 L70 135 Q70 143 100 143 Q130 143 130 135 L130 115" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                                <text x="100" y="130" textAnchor="middle" fontSize="7" fill="currentColor">User Database</text>
+                            {/* Diagram Panel */}
+                            <div className={styles.diagramPreview}>
+                                <div className={styles.diagramHeader}>
+                                    <span className={styles.diagramLabel}>Live Preview</span>
+                                    <span className={styles.diagramBadge}>SVG</span>
+                                </div>
+                                <div className={styles.diagramCanvas}>
+                                    <svg viewBox="0 0 200 180" className={styles.diagramSvg}>
+                                        {/* Frontend App */}
+                                        <rect x="65" y="10" width="70" height="35" rx="6" fill="rgba(99, 102, 241, 0.1)" stroke="#6366f1" strokeWidth="1.5" />
+                                        <text x="100" y="32" textAnchor="middle" fontSize="10" fill="currentColor" fontWeight="500">Frontend App</text>
 
-                                {/* Arrows */}
-                                <line x1="100" y1="40" x2="100" y2="60" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
-                                <line x1="100" y1="90" x2="100" y2="107" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
+                                        {/* Auth Service */}
+                                        <rect x="65" y="70" width="70" height="35" rx="6" fill="rgba(99, 102, 241, 0.1)" stroke="#6366f1" strokeWidth="1.5" />
+                                        <text x="100" y="92" textAnchor="middle" fontSize="10" fill="currentColor" fontWeight="500">Auth Service</text>
 
-                                <defs>
-                                    <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
-                                        <polygon points="0 0, 6 3, 0 6" fill="currentColor" />
-                                    </marker>
-                                </defs>
-                            </svg>
+                                        {/* User Database (Cylinder) */}
+                                        <ellipse cx="100" cy="135" rx="35" ry="10" fill="rgba(34, 197, 94, 0.1)" stroke="#22c55e" strokeWidth="1.5" />
+                                        <path d="M65 135 L65 160 Q65 170 100 170 Q135 170 135 160 L135 135" fill="rgba(34, 197, 94, 0.1)" stroke="#22c55e" strokeWidth="1.5" />
+                                        <text x="100" y="155" textAnchor="middle" fontSize="9" fill="currentColor" fontWeight="500">User Database</text>
+
+                                        {/* Arrows */}
+                                        <line x1="100" y1="45" x2="100" y2="70" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#arrowhead2)" />
+                                        <line x1="100" y1="105" x2="100" y2="125" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#arrowhead2)" />
+
+                                        {/* Edge labels */}
+                                        <text x="115" y="118" fontSize="7" fill="var(--color-text-tertiary)">Read/Write</text>
+
+                                        <defs>
+                                            <marker id="arrowhead2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+                                                <polygon points="0 0, 8 4, 0 8" fill="currentColor" />
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
