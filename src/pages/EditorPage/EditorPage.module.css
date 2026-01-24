@@ -66,6 +66,7 @@
 
 .headerRight {
     justify-content: flex-end;
+    gap: 0.75rem;
 }
 
 .headerCenter {

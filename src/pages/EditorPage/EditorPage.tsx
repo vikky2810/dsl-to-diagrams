@@ -4,6 +4,7 @@ import { parseDSL } from '../../utils/parser'
 import { ThemeProvider, useTheme } from '../../contexts/ThemeContext'
 import { EditorPanel } from '../../components/EditorPanel'
 import { DiagramViewer } from '../../components/DiagramViewer'
+import { HelpPanel } from '../../components/HelpPanel'
 import styles from './EditorPage.module.css'
 
 // Example DSL text
@@ -34,6 +35,7 @@ function EditorHeader() {
                 <span className={styles.logoText}>VArch Editor</span>
             </div>
             <div className={styles.headerRight}>
+                <HelpPanel />
                 <button
                     className={styles.themeToggle}
                     onClick={toggleTheme}
