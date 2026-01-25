@@ -22,7 +22,7 @@ export type ParseResult = {
     lineCount: number
 }
 
-export type PositionedNode = Node & { x: number; y: number }
+export type PositionedNode = Node & { x: number; y: number; width: number; height: number }
 
 export type PositionedEdge = {
     from: PositionedNode

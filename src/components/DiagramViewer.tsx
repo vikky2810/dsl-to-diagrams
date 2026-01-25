@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import type { AST } from '../types'
-import { buildLayout, NODE_WIDTH, NODE_HEIGHT } from '../utils/layout'
+import { buildLayout } from '../utils/layout'
 import styles from './DiagramViewer.module.css'
 import { BarChart, Download } from 'lucide-react'
 
@@ -210,10 +210,10 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                             // If we can't find the nodes, don't render this edge
                             if (!sourceNode || !targetNode) return null;
 
-                            const x1 = sourceNode.x + NODE_WIDTH / 2
-                            const y1 = sourceNode.y + NODE_HEIGHT / 2
-                            const x2 = targetNode.x + NODE_WIDTH / 2
-                            const y2 = targetNode.y + NODE_HEIGHT / 2
+                            const x1 = sourceNode.x + sourceNode.width / 2
+                            const y1 = sourceNode.y + sourceNode.height / 2
+                            const x2 = targetNode.x + targetNode.width / 2
+                            const y2 = targetNode.y + targetNode.height / 2
 
                             // Midpoints for the label
                             const mx = (x1 + x2) / 2
@@ -223,8 +223,9 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                             const angle = Math.atan2(y2 - y1, x2 - x1)
                             const arrowSize = 8
                             // Offset arrow slightly from the center of the destination node
-                            const arrowX = x2 - Math.cos(angle) * (NODE_WIDTH / 2 + 8)
-                            const arrowY = y2 - Math.sin(angle) * (NODE_HEIGHT / 2 + 8)
+                            // Use target node dimensions for offset
+                            const arrowX = x2 - Math.cos(angle) * (targetNode.width / 2 + 8)
+                            const arrowY = y2 - Math.sin(angle) * (targetNode.height / 2 + 8)
 
                             const arrowLeftX = arrowX - arrowSize * Math.cos(angle - Math.PI / 6)
                             const arrowLeftY = arrowY - arrowSize * Math.sin(angle - Math.PI / 6)
@@ -255,9 +256,9 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
                                     {edge.label && (
                                         <g>
                                             <rect
-                                                x={labelX - (edge.label.length * 4)}
+                                                x={labelX - (edge.label.length * 4.5) - 8}
                                                 y={labelY - 10}
-                                                width={edge.label.length * 8}
+                                                width={edge.label.length * 9 + 16}
                                                 height={20}
                                                 fill="rgba(10, 10, 10, 0.9)" // Darker background for readability
                                                 stroke="rgba(115, 115, 115, 0.5)"
@@ -292,22 +293,43 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
 
 
                                     {/* Main node */}
-                                    <rect
-                                        x={node.x}
-                                        y={node.y}
-                                        width={NODE_WIDTH}
-                                        height={NODE_HEIGHT}
-                                        rx={6}
-                                        fill={colors.fill}
-                                        stroke={colors.stroke}
-                                        strokeWidth={2}
-                                        className={styles.nodeRect}
-                                    />
+                                    {/* Main node */}
+                                    {node.type === 'db' ? (
+                                        <g>
+                                            <path
+                                                d={`M ${node.x},${node.y + 10} L ${node.x},${node.y + node.height - 10} A ${node.width / 2} 10 0 0 0 ${node.x + node.width} ${node.y + node.height - 10} L ${node.x + node.width},${node.y + 10}`}
+                                                fill={colors.fill}
+                                                stroke={colors.stroke}
+                                                strokeWidth={2}
+                                            />
+                                            <ellipse
+                                                cx={node.x + node.width / 2}
+                                                cy={node.y + 10}
+                                                rx={node.width / 2}
+                                                ry={10}
+                                                fill={colors.fill}
+                                                stroke={colors.stroke}
+                                                strokeWidth={2}
+                                            />
+                                        </g>
+                                    ) : (
+                                        <rect
+                                            x={node.x}
+                                            y={node.y}
+                                            width={node.width}
+                                            height={node.height}
+                                            rx={6}
+                                            fill={colors.fill}
+                                            stroke={colors.stroke}
+                                            strokeWidth={2}
+                                            className={styles.nodeRect}
+                                        />
+                                    )}
 
                                     {/* Node label */}
                                     <text
-                                        x={node.x + NODE_WIDTH / 2}
-                                        y={node.y + NODE_HEIGHT / 2 - 4}
+                                        x={node.x + node.width / 2}
+                                        y={node.y + node.height / 2 + (node.type === 'db' ? 5 : -4)}
                                         fill="#ffffff"
                                         fontSize={13}
                                         fontWeight={600}
@@ -319,8 +341,8 @@ export function DiagramViewer({ ast }: DiagramViewerProps) {
 
                                     {/* Node type badge */}
                                     <text
-                                        x={node.x + NODE_WIDTH / 2}
-                                        y={node.y + NODE_HEIGHT - 12}
+                                        x={node.x + node.width / 2}
+                                        y={node.y + node.height - (node.type === 'db' ? 8 : 12)}
                                         fill={colors.stroke}
                                         fontSize={9}
                                         fontWeight={500}

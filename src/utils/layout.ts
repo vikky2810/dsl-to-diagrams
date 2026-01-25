@@ -11,21 +11,32 @@ export function buildLayout(ast: AST): Layout {
         return { nodes: [], edges: [], width: 0, height: 0 }
     }
 
+    // Calculate the maximum edge label length to adjust ranksep dynamically
+    const maxEdgeLabelLength = ast.edges.reduce((max, edge) => Math.max(max, (edge.label || '').length), 0)
+    // Base separation of 60px + approx 9px per character of the longest edge label
+    // Ensure a minimum separation of 100px
+    const dynamicRankSep = Math.max(100, 60 + maxEdgeLabelLength * 9)
+
     // Build a Dagre graph for automatic layout
     const g = new dagre.graphlib.Graph()
         .setGraph({
             rankdir: 'LR',
-            nodesep: NODE_MARGIN_X,
-            ranksep: NODE_MARGIN_Y,
+            nodesep: 50, // Vertical spacing between nodes
+            ranksep: dynamicRankSep, // Horizontal spacing adjusted for edge labels
             marginx: NODE_MARGIN_X,
             marginy: NODE_MARGIN_Y,
         })
         .setDefaultEdgeLabel(() => ({}))
 
     ast.nodes.forEach(node => {
+        // Calculate dynamic width based on label length
+        // Base width 120px, approx 11px per character for font size 13 (increased from 9 for safety)
+        // Add padding (approx 40px)
+        const calculatedWidth = Math.max(NODE_WIDTH, node.label.length * 11 + 40)
+
         g.setNode(node.id, {
-            width: NODE_WIDTH + 70,
-            height: NODE_HEIGHT + 20,
+            width: calculatedWidth,
+            height: NODE_HEIGHT,
             // keep a reference to the original node data
             node,
         })
@@ -40,16 +51,20 @@ export function buildLayout(ast: AST): Layout {
     dagre.layout(g)
 
     const positionedNodes: PositionedNode[] = g.nodes().map(nodeId => {
-        const gNode = g.node(nodeId) as dagre.Node
-        const baseNode = (gNode as unknown as { node: typeof ast.nodes[0] }).node
+        const gNode = g.node(nodeId) as dagre.Node & { node: typeof ast.nodes[0] }
 
-        const x = gNode.x - NODE_WIDTH / 2
-        const y = gNode.y - NODE_HEIGHT / 2
+        // dagre returns center coordinates, we need top-left
+        const width = gNode.width
+        const height = gNode.height
+        const x = gNode.x - width / 2
+        const y = gNode.y - height / 2
 
         return {
-            ...baseNode,
+            ...gNode.node,
             x,
             y,
+            width,
+            height,
         }
     })
 
@@ -71,10 +86,8 @@ export function buildLayout(ast: AST): Layout {
         .filter((e): e is NonNullable<typeof e> => e !== null)
 
     // Compute overall diagram bounds from positioned nodes
-    const xs = positionedNodes.map(n => n.x)
-    const ys = positionedNodes.map(n => n.y)
-    const maxX = Math.max(...xs) + NODE_WIDTH + NODE_MARGIN_X
-    const maxY = Math.max(...ys) + NODE_HEIGHT + NODE_MARGIN_Y
+    const maxX = Math.max(...positionedNodes.map(n => n.x + n.width)) + NODE_MARGIN_X
+    const maxY = Math.max(...positionedNodes.map(n => n.y + n.height)) + NODE_MARGIN_Y
 
     return {
         nodes: positionedNodes,
