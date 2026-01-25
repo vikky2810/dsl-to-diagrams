@@ -78,6 +78,7 @@
 
 .logoIcon {
     font-size: 1.4rem;
+    margin-top: 0.5rem;
     background: linear-gradient(135deg,
             var(--color-primary-light) 0%,
             var(--color-accent-light) 100%);
