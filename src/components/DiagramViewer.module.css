@@ -1,80 +1,91 @@
 .container {
-    background: transparent;
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    animation: fadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    background: linear-gradient(180deg,
+            rgba(10, 10, 10, 0.95) 0%,
+            rgba(5, 5, 5, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
+    overflow: hidden;
+}
+
+/* Subtle gradient overlay for depth - matching EditorPanel */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.02) 0%,
+            transparent 100%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .controls {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
     justify-content: flex-end;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.03) 0%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.02) 100%);
     position: relative;
     z-index: 10;
 }
 
 .downloadButton {
-    background: linear-gradient(135deg,
-            rgba(99, 102, 241, 0.9) 0%,
-            rgba(79, 70, 229, 0.95) 100%);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.6rem 1rem;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
     border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.03) 100%);
+    color: var(--color-primary-light);
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-base);
+    transition: all var(--transition-fast);
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    box-shadow:
-        0 4px 12px rgba(99, 102, 241, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    letter-spacing: 0.01em;
+    letter-spacing: normal;
 }
 
 .downloadButton:hover {
     background: linear-gradient(135deg,
-            rgba(129, 140, 248, 0.95) 0%,
-            rgba(99, 102, 241, 1) 100%);
-    transform: translateY(-2px);
-    box-shadow:
-        0 8px 20px rgba(99, 102, 241, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
 }
 
 .downloadButton:active {
     transform: translateY(0);
-    box-shadow:
-        0 2px 8px rgba(99, 102, 241, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Secondary download button variant */
+/* Secondary download button variant - same style as primary now */
 .downloadButton:nth-child(2) {
     background: linear-gradient(135deg,
-            rgba(236, 72, 153, 0.9) 0%,
-            rgba(219, 39, 119, 0.95) 100%);
-    box-shadow:
-        0 4px 12px rgba(236, 72, 153, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.03) 100%);
+    box-shadow: none;
 }
 
 .downloadButton:nth-child(2):hover {
     background: linear-gradient(135deg,
-            rgba(244, 114, 182, 0.95) 0%,
-            rgba(236, 72, 153, 1) 100%);
-    box-shadow:
-        0 8px 20px rgba(236, 72, 153, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
 }
 
 .header {
@@ -92,21 +103,23 @@
 }
 
 .svgContainer {
+    position: relative;
     flex: 1;
-    background: linear-gradient(145deg,
-            rgba(8, 8, 16, 0.95) 0%,
-            rgba(15, 15, 28, 0.98) 50%,
-            rgba(10, 10, 20, 0.96) 100%);
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg,
+            rgba(5, 5, 5, 0.95) 0%,
+            rgba(10, 10, 10, 0.98) 100%);
+    margin: var(--spacing-md);
+    margin-top: 0;
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    overflow: hidden;
-    position: relative;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.02),
-        0 8px 32px rgba(0, 0, 0, 0.5);
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Gradient border effect */
+/* Subtle inner glow effect - matching EditorPanel */
 .svgContainer::before {
     content: '';
     position: absolute;
@@ -114,10 +127,9 @@
     border-radius: var(--radius-lg);
     padding: 1px;
     background: linear-gradient(135deg,
-            rgba(99, 102, 241, 0.2) 0%,
-            transparent 40%,
-            transparent 60%,
-            rgba(236, 72, 153, 0.15) 100%);
+            rgba(255, 255, 255, 0.08) 0%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.04) 100%);
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
@@ -136,7 +148,7 @@
     inset: 0;
     background-image:
         radial-gradient(circle at center,
-            rgba(99, 102, 241, 0.03) 1px,
+            rgba(255, 255, 255, 0.02) 1px,
             transparent 1px);
     background-size: 24px 24px;
     pointer-events: none;
@@ -221,30 +233,28 @@
     font-size: 0.95rem;
 }
 
-/* Light theme adjustments */
+/* Light theme adjustments - matching EditorPanel */
 :global([data-theme="light"]) .svgContainer {
-    background: linear-gradient(145deg,
-            rgba(248, 250, 252, 0.98) 0%,
-            rgba(241, 245, 249, 0.99) 50%,
-            rgba(248, 250, 252, 0.97) 100%);
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(248, 250, 252, 0.98) 100%);
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        0 8px 32px rgba(0, 0, 0, 0.1);
+        0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 :global([data-theme="light"]) .svgContainer::before {
     background: linear-gradient(135deg,
-            rgba(99, 102, 241, 0.15) 0%,
-            transparent 40%,
-            transparent 60%,
-            rgba(236, 72, 153, 0.1) 100%);
+            rgba(0, 0, 0, 0.06) 0%,
+            transparent 50%,
+            rgba(0, 0, 0, 0.03) 100%);
 }
 
 :global([data-theme="light"]) .svgContainer::after {
     background-image:
         radial-gradient(circle at center,
-            rgba(99, 102, 241, 0.08) 1px,
+            rgba(0, 0, 0, 0.04) 1px,
             transparent 1px);
 }
 
@@ -254,4 +264,57 @@
             rgba(51, 65, 85, 0.9) 100%);
     -webkit-background-clip: text;
     background-clip: text;
+}
+
+/* Light theme for container - matching EditorPanel */
+:global([data-theme="light"]) .container {
+    background: linear-gradient(180deg,
+            rgba(248, 250, 252, 0.98) 0%,
+            rgba(241, 245, 249, 0.99) 100%);
+}
+
+:global([data-theme="light"]) .container::before {
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0.05) 0%,
+            transparent 100%);
+}
+
+/* Light theme for controls */
+:global([data-theme="light"]) .controls {
+    background: linear-gradient(90deg,
+            rgba(0, 0, 0, 0.04) 0%,
+            transparent 50%,
+            rgba(0, 0, 0, 0.03) 100%);
+}
+
+:global([data-theme="light"]) .downloadButton {
+    background: linear-gradient(135deg,
+            rgba(51, 65, 85, 0.9) 0%,
+            rgba(30, 41, 59, 0.95) 100%);
+    color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="light"]) .downloadButton:hover {
+    background: linear-gradient(135deg,
+            rgba(30, 41, 59, 0.95) 0%,
+            rgba(15, 23, 42, 1) 100%);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+:global([data-theme="light"]) .downloadButton:nth-child(2) {
+    background: linear-gradient(135deg,
+            rgba(100, 116, 139, 0.9) 0%,
+            rgba(71, 85, 105, 0.95) 100%);
+}
+
+:global([data-theme="light"]) .downloadButton:nth-child(2):hover {
+    background: linear-gradient(135deg,
+            rgba(71, 85, 105, 0.95) 0%,
+            rgba(51, 65, 85, 1) 100%);
 }

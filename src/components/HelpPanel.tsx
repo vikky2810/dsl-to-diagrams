@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './HelpPanel.module.css'
+import { BookOpen, Sparkles, Lightbulb } from 'lucide-react'
 
 export function HelpPanel() {
     const [isOpen, setIsOpen] = useState(false)
@@ -26,7 +27,7 @@ export function HelpPanel() {
                     <div className={styles.modal} onClick={e => e.stopPropagation()}>
                         <div className={styles.modalHeader}>
                             <div className={styles.modalTitle}>
-                                <span className={styles.icon}>📖</span>
+                                <span className={styles.icon}><BookOpen size={24} /></span>
                                 <h2>VArch DSL Reference</h2>
                             </div>
                             <button
@@ -165,7 +166,7 @@ export function HelpPanel() {
                             {/* Complete Example */}
                             <section className={styles.section}>
                                 <h3 className={styles.sectionTitle}>
-                                    <span className={styles.badge}>✨</span>
+                                    <span className={styles.badge}><Sparkles size={16} /></span>
                                     Complete Example
                                 </h3>
 
@@ -241,7 +242,7 @@ export function HelpPanel() {
                             {/* Tips */}
                             <section className={styles.section}>
                                 <div className={styles.tipBox}>
-                                    <span className={styles.tipIcon}>💡</span>
+                                    <span className={styles.tipIcon}><Lightbulb size={20} /></span>
                                     <div>
                                         <strong>Pro Tips:</strong>
                                         <ul className={styles.tipList}>

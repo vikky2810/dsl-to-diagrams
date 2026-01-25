@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { AST } from '../types'
 import styles from './ASTDebugView.module.css'
+import { Check, Clipboard, ChevronDown, ChevronRight } from 'lucide-react'
 
 type ASTDebugViewProps = {
     ast: AST
@@ -26,13 +27,13 @@ export function ASTDebugView({ ast }: ASTDebugViewProps) {
                         onClick={handleCopy}
                         title="Copy to clipboard"
                     >
-                        {copied ? '✓ Copied' : '📋 Copy'}
+                        {copied ? <><Check size={14} /> Copied</> : <><Clipboard size={14} /> Copy</>}
                     </button>
                     <button
                         className={styles.toggleButton}
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
-                        {isExpanded ? '▼ Collapse' : '▶ Expand'}
+                        {isExpanded ? <><ChevronDown size={14} /> Collapse</> : <><ChevronRight size={14} /> Expand</>}
                     </button>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import styles from './LandingPage.module.css'
+import { Hexagon } from 'lucide-react'
 
 // Icons as simple SVG components
 const CodeIcon = () => (
@@ -58,7 +59,7 @@ export function LandingPage() {
             <nav className={styles.nav}>
                 <div className={styles.navContent}>
                     <div className={styles.logo}>
-                        <span className={styles.logoIcon}>⬡</span>
+                        <span className={styles.logoIcon}><Hexagon size={24} /></span>
                         <span className={styles.logoText}>VArch</span>
                     </div>
                     <div className={styles.navLinks}>
@@ -318,7 +319,7 @@ web -> auth`}
             <footer className={styles.footer}>
                 <div className={styles.footerContent}>
                     <div className={styles.footerLogo}>
-                        <span className={styles.logoIcon}>⬡</span>
+                        <span className={styles.logoIcon}><Hexagon size={24} /></span>
                         <span>VArch</span>
                     </div>
                     <p className={styles.footerText}>

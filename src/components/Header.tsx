@@ -1,5 +1,6 @@
 import { useTheme } from '../contexts/ThemeContext'
 import styles from './Header.module.css'
+import { Sun, Moon } from 'lucide-react'
 
 export function Header() {
     const { theme, toggleTheme } = useTheme()
@@ -22,7 +23,7 @@ export function Header() {
                     aria-label="Toggle theme"
                     title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                 >
-                    {theme === 'dark' ? '☀️' : '🌙'}
+                    {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
             </div>
         </header>
