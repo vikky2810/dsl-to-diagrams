@@ -138,8 +138,8 @@
     bottom: 0;
     width: 100%;
     height: 100%;
-    padding: var(--spacing-lg);
-    padding-left: calc(48px + var(--spacing-lg));
+    padding: var(--spacing-sm) var(--spacing-lg);
+    padding-left: calc(48px + var(--spacing-md));
 
     font-family: 'JetBrains Mono', 'Fira Code', var(--font-mono);
     font-size: 14px;
@@ -173,7 +173,7 @@
 /* VS Code style line numbers - clean and simple */
 .highlightLayer :global(.line-number) {
     position: absolute;
-    left: calc(-48px - var(--spacing-lg) + 8px);
+    left: calc(-48px - var(--spacing-xl) + 8px);
     width: 32px;
 
     /* Simple, muted appearance like VS Code */
