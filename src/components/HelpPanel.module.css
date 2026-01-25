@@ -194,7 +194,7 @@
     height: 26px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    color: white;
+    color: black;
     font-size: 0.8rem;
     font-weight: 700;
 }
@@ -329,6 +329,8 @@
 
 .tipIcon {
     font-size: 1.5rem;
+    position: relative;
+    top: -0.3rem;
     flex-shrink: 0;
 }
 
