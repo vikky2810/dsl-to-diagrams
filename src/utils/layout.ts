@@ -56,9 +56,11 @@ export function buildLayout(ast: AST): Layout {
         // Notes may be wider than the box, so reserve their full footprint
         const noteWidth = Math.max(0, ...node.notes.map(note => measureText(note, FONTS.note)))
 
+        // Notes hang below the box; mirror that space above so dagre centres the
+        // box itself, keeping edges between same-rank boxes straight
         g.setNode(node.id, {
             width: Math.max(boxWidth, noteWidth),
-            height: NODE_HEIGHT + notesHeight(node.notes),
+            height: NODE_HEIGHT + notesHeight(node.notes) * 2,
             // keep a reference to the original node data
             node,
         })
@@ -73,18 +75,20 @@ export function buildLayout(ast: AST): Layout {
     dagre.layout(g)
 
     let maxX = 0
+    let minY = Infinity
     let maxY = 0
 
     const positionedNodes: PositionedNode[] = g.nodes().map(nodeId => {
         const gNode = g.node(nodeId) as dagre.Node & { node: typeof ast.nodes[0] }
 
-        maxX = Math.max(maxX, gNode.x + gNode.width / 2)
-        maxY = Math.max(maxY, gNode.y + gNode.height / 2)
-
-        // dagre returns the centre of the whole footprint; the box sits at its top
+        // dagre returns the centre of the padded footprint, which is the box centre
         const width = boxWidths.get(nodeId)!
         const x = gNode.x - width / 2
-        const y = gNode.y - gNode.height / 2
+        const y = gNode.y - NODE_HEIGHT / 2
+
+        maxX = Math.max(maxX, gNode.x + gNode.width / 2)
+        minY = Math.min(minY, y)
+        maxY = Math.max(maxY, y + NODE_HEIGHT + notesHeight(gNode.node.notes))
 
         return {
             ...gNode.node,
@@ -94,6 +98,11 @@ export function buildLayout(ast: AST): Layout {
             height: NODE_HEIGHT,
         }
     })
+
+    // Drop the unused space the top padding left above the diagram
+    const shiftY = minY - NODE_MARGIN_Y
+    positionedNodes.forEach(n => (n.y -= shiftY))
+    maxY -= shiftY
 
     const byId = new Map<string, PositionedNode>()
     positionedNodes.forEach(n => byId.set(n.id, n))
