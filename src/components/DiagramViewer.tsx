@@ -1,6 +1,6 @@
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import type { AST } from '../types'
-import { buildLayout } from '../utils/layout'
+import { useLayout } from '../utils/layout'
 import { LiveDiagram } from './LiveDiagram'
 import { ExportMenu } from './ExportMenu'
 import styles from './DiagramViewer.module.css'
@@ -12,7 +12,7 @@ type DiagramViewerProps = {
 
 export function DiagramViewer({ ast }: DiagramViewerProps) {
     const svgRef = useRef<SVGSVGElement>(null)
-    const layout = useMemo(() => buildLayout(ast), [ast])
+    const layout = useLayout(ast)
 
     if (ast.nodes.length === 0) {
         return (

@@ -1,6 +1,7 @@
 import { useId } from 'react'
 import type { Ref } from 'react'
 import type { Layout, PositionedNode } from '../types'
+import { NOTE_GAP, NOTE_LINE_HEIGHT } from '../utils/layout'
 import styles from './LiveDiagram.module.css'
 
 type LiveDiagramProps = {
@@ -77,7 +78,7 @@ export function LiveDiagram({ layout, animate = true, className, ref }: LiveDiag
                     const dx = Math.max(40, Math.abs(x2 - x1) / 2)
                     const mx = (x1 + x2) / 2
                     const my = (y1 + y2) / 2
-                    const labelWidth = (edge.label?.length ?? 0) * 6.6 + 16
+                    const { labelWidth } = edge
 
                     return (
                         <g key={`${from.id}>${to.id}-${idx}`} className={styles.edge}>
@@ -122,6 +123,18 @@ export function LiveDiagram({ layout, animate = true, className, ref }: LiveDiag
                             >
                                 {node.type}
                             </text>
+                            {node.notes.map((note, i) => (
+                                <text
+                                    key={i}
+                                    x={node.width / 2}
+                                    y={node.height + NOTE_GAP + (i + 0.5) * NOTE_LINE_HEIGHT}
+                                    textAnchor="middle"
+                                    dominantBaseline="central"
+                                    className={styles.nodeNoteText}
+                                >
+                                    {note}
+                                </text>
+                            ))}
                         </g>
                     </g>
                 ))}

@@ -130,6 +130,8 @@
   --l-accent-fg: #a3e635;
   --l-accent-ink: #0a0a0b;
   --l-accent-tint: rgba(163, 230, 53, 0.07);
+  --l-danger: #f87171;
+  --l-danger-tint: rgba(248, 113, 113, 0.08);
 
   --l-radius: 14px;
   --l-ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -154,6 +156,8 @@
   --l-node-stroke: rgba(0, 0, 0, 0.35);
   --l-accent-fg: #3f6212;
   --l-accent-tint: rgba(101, 163, 13, 0.08);
+  --l-danger: #c81e1e;
+  --l-danger-tint: rgba(220, 38, 38, 0.07);
 }
 
 * {

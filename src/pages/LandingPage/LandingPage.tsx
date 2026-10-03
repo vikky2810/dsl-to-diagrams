@@ -1,8 +1,7 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check, Download, Hexagon, Minus, Repeat, Zap } from 'lucide-react'
 import { parseDSL } from '../../utils/parser'
-import { buildLayout } from '../../utils/layout'
+import { useLayout } from '../../utils/layout'
 import { HeroPlayground } from './HeroPlayground'
 import { LiveDiagram } from '../../components/LiveDiagram'
 import styles from './LandingPage.module.css'
@@ -21,7 +20,7 @@ const SYNTAX = [
     { code: 'db users "Users DB"', name: 'Database', desc: 'Drawn as a cylinder so storage reads at a glance.' },
     { code: 'ui web "Web App"', name: 'Interface', desc: 'Clients, dashboards and anything a person touches.' },
     { code: 'queue jobs "Job Queue"', name: 'Queue', desc: 'Brokers, buses and streams between services.' },
-    { code: 'text later "Add a cache"', name: 'Note', desc: 'A free-standing note, drawn with a dashed border.' },
+    { code: 'text users "10k rows"', name: 'Note', desc: 'A note under a component, or a free-standing one on a new id.' },
     { code: 'api -> users "read/write"', name: 'Connection', desc: 'An arrow between two ids, with an optional label.' },
 ]
 
@@ -39,8 +38,10 @@ gateway -> events "publish"
 billing -> orders
 events -> orders "persist"`
 
+const SYSTEM_AST = parseDSL(SYSTEM_DSL).ast
+
 export function LandingPage() {
-    const systemLayout = useMemo(() => buildLayout(parseDSL(SYSTEM_DSL).ast), [])
+    const systemLayout = useLayout(SYSTEM_AST)
 
     return (
         <div className={styles.landing}>

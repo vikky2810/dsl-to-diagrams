@@ -1,61 +1,90 @@
-import type { Node, NodeType, ParseResult } from '../types'
+import type { Edge, Node, NodeType, ParseError, ParseResult } from '../types'
 
-// Basic parser: turns DSL into an AST (nodes + edges)
+// Each pattern must match the whole line, so trailing junk is reported instead of ignored
+const COMPONENT = /^(db|svc|ui|queue)\s+(\w+)(?:\s+"([^"]*)")?\s*$/
+const NOTE = /^text\s+(\w+)\s+"([^"]*)"\s*$/
+const EDGE = /^(?:connect\s+)?(\w+)\s*->\s*(\w+)(?:\s+"([^"]*)")?\s*$/
+
+// Explains what a line that matched nothing should have looked like
+function describeSyntaxError(line: string): string {
+    const keyword = line.split(/\s+/)[0]
+    if (/^(db|svc|ui|queue)$/.test(keyword)) return `Expected ${keyword} id "Label"`
+    if (keyword === 'text') return 'Expected text id "Note"'
+    if (line.includes('->')) return 'Expected from -> to "Label"'
+    return `Unknown command \`${keyword}\``
+}
+
+// Turns DSL into an AST (nodes + edges). Notes and connections may refer to
+// components declared further down, so they are resolved after every line is read.
 export function parseDSL(text: string): ParseResult {
-    const lines = text.split('\n').filter(line => line.trim() !== '')
-
     const nodeMap = new Map<string, Node>()
-    const edges: { from: string; to: string; label?: string }[] = []
+    const notes: { id: string; text: string }[] = []
+    const edges: (Edge & { line: number })[] = []
+    const errors: ParseError[] = []
+    let lineCount = 0
 
-    lines.forEach(line => {
-        const trimmed = line.trim()
+    text.split('\n').forEach((raw, idx) => {
+        const line = raw.trim()
+        if (!line) return
+        lineCount++
+        if (line.startsWith('#')) return
 
-        // Node definitions: db|svc|ui|queue id "label"
-        const nodeMatch = trimmed.match(/^(db|svc|ui|queue)\s+(\w+)(?:\s+"([^"]*)")?/)
-        if (nodeMatch) {
-            const [, type, id, label] = nodeMatch as [string, NodeType, string, string | undefined]
+        const component = line.match(COMPONENT)
+        if (component) {
+            const [, type, id, label] = component as [string, NodeType, string, string | undefined]
             const existing = nodeMap.get(id)
-            const nodeLabel = label ?? existing?.label ?? id
             nodeMap.set(id, {
                 id,
                 type,
-                label: nodeLabel,
+                label: label ?? existing?.label ?? id,
+                notes: existing?.notes ?? [],
             })
             return
         }
 
-        // Text/notes: text targetId "note"
-        const textMatch = trimmed.match(/^text\s+(\w+)\s+"([^"]*)"/)
-        if (textMatch) {
-            const [, targetId, noteLabel] = textMatch
-            const existing = nodeMap.get(targetId)
-            if (!existing) {
-                nodeMap.set(targetId, {
-                    id: targetId,
-                    type: 'text',
-                    label: noteLabel,
-                })
-            }
+        const note = line.match(NOTE)
+        if (note) {
+            notes.push({ id: note[1], text: note[2] })
             return
         }
 
-        // Edges: id1 -> id2 "optional label" OR connect id1 -> id2 "optional label"
-        const edgeMatch = trimmed.match(/^(?:connect\s+)?(\w+)\s*->\s*(\w+)(?:\s+"([^"]*)")?/)
-        if (edgeMatch) {
-            const [, from, to, label] = edgeMatch
-            edges.push({
-                from,
-                to,
-                label: label || undefined,
-            })
+        const edge = line.match(EDGE)
+        if (edge) {
+            const [, from, to, label] = edge
+            edges.push({ from, to, label: label || undefined, line: idx + 1 })
+            return
         }
+
+        errors.push({ line: idx + 1, message: describeSyntaxError(line) })
     })
+
+    // A note on a component is attached to it; on an unknown id it becomes a
+    // free-standing note, and any further notes on that id stack beneath it
+    notes.forEach(({ id, text }) => {
+        const existing = nodeMap.get(id)
+        if (existing) existing.notes.push(text)
+        else nodeMap.set(id, { id, type: 'text', label: text, notes: [] })
+    })
+
+    const validEdges: Edge[] = []
+    edges.forEach(({ line, ...edge }) => {
+        const missing = [...new Set([edge.from, edge.to])].filter(id => !nodeMap.has(id))
+        if (missing.length === 0) {
+            validEdges.push(edge)
+            return
+        }
+        const names = missing.map(id => `\`${id}\``).join(' and ')
+        errors.push({ line, message: `Unknown ${missing.length > 1 ? 'nodes' : 'node'} ${names}` })
+    })
+
+    errors.sort((a, b) => a.line - b.line)
 
     return {
         ast: {
             nodes: Array.from(nodeMap.values()),
-            edges,
+            edges: validEdges,
         },
-        lineCount: lines.length,
+        errors,
+        lineCount,
     }
 }

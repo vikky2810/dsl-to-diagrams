@@ -69,7 +69,7 @@ function EditorContent() {
 
             <div className={styles.editorContainer}>
                 <div className={styles.editorPane}>
-                    <EditorPanel value={dslText} onChange={setDslText} />
+                    <EditorPanel value={dslText} onChange={setDslText} errors={parsed.errors} />
                 </div>
 
                 <div className={styles.previewPane}>

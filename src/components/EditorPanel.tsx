@@ -1,16 +1,20 @@
 import { useRef, useEffect } from 'react'
+import { CircleAlert } from 'lucide-react'
+import type { ParseError } from '../types'
 import styles from './EditorPanel.module.css'
 
 type EditorPanelProps = {
     value: string
     onChange: (value: string) => void
+    errors?: ParseError[]
 }
 
-export function EditorPanel({ value, onChange }: EditorPanelProps) {
+export function EditorPanel({ value, onChange, errors = [] }: EditorPanelProps) {
     const lineCount = value.split('\n').length
     const charCount = value.length
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const highlightLayerRef = useRef<HTMLDivElement>(null)
+    const errorLines = new Set(errors.map(e => e.line))
 
     useEffect(() => {
         const textarea = textareaRef.current
@@ -29,8 +33,9 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
     const highlightedContent = value
         .split('\n')
         .map((line, idx) => {
+            const lineClass = errorLines.has(idx + 1) ? 'line error' : 'line'
             if (!line.trim()) {
-                return `<div class="line"><span class="line-number">${idx + 1}</span> </div>`
+                return `<div class="${lineClass}"><span class="line-number">${idx + 1}</span> </div>`
             }
 
             let result = ''
@@ -105,7 +110,7 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
                 i++
             }
 
-            return `<div class="line"><span class="line-number">${idx + 1}</span>${result}</div>`
+            return `<div class="${lineClass}"><span class="line-number">${idx + 1}</span>${result}</div>`
         })
         .join('')
 
@@ -115,6 +120,11 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
                 <h2 className={styles.title}>architecture.varch</h2>
                 <span className={styles.stats}>
                     {lineCount} {lineCount === 1 ? 'line' : 'lines'}, {charCount} chars
+                    {errors.length > 0 && (
+                        <span className={styles.errorCount}>
+                            , {errors.length} {errors.length === 1 ? 'problem' : 'problems'}
+                        </span>
+                    )}
                 </span>
             </div>
 
@@ -134,6 +144,18 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
                     spellCheck={false}
                 />
             </div>
+
+            {errors.length > 0 && (
+                <ul className={styles.problems} aria-label="Problems" aria-live="polite">
+                    {errors.map((error, i) => (
+                        <li key={i} className={styles.problem}>
+                            <CircleAlert size={13} strokeWidth={2} className={styles.problemIcon} />
+                            <span className={styles.problemLine}>Line {error.line}</span>
+                            <span>{error.message}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }

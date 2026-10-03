@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { parseDSL } from '../../utils/parser'
-import { buildLayout } from '../../utils/layout'
+import { buildLayout, useLayout } from '../../utils/layout'
 import type { Layout } from '../../types'
 import { LiveDiagram } from '../../components/LiveDiagram'
 import styles from './HeroPlayground.module.css'
@@ -15,6 +15,8 @@ db users "Users DB"
 web -> api
 api -> users "read/write"
 api -> jobs "enqueue"`
+
+const EXAMPLE_AST = parseDSL(EXAMPLE_DSL).ast
 
 const KEYWORD = /^(\s*)(db|svc|ui|queue|text|connect)\b/
 const TOKENS = /("[^"]*"?|->)/
@@ -61,7 +63,7 @@ export function HeroPlayground() {
     const highlightRef = useRef<HTMLPreElement>(null)
     const gutterRef = useRef<HTMLDivElement>(null)
 
-    const exampleLayout = useMemo(() => buildLayout(parseDSL(EXAMPLE_DSL).ast), [])
+    const exampleLayout = useLayout(EXAMPLE_AST)
 
     useEffect(() => {
         if (!typing) return

@@ -41,6 +41,12 @@
     fill: var(--l-fg-subtle);
 }
 
+.nodeNoteText {
+    font-family: var(--l-sans);
+    font-size: 11px;
+    fill: var(--l-fg-muted);
+}
+
 .edgePath {
     fill: none;
     stroke: var(--l-fg-subtle);

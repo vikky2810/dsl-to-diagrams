@@ -86,6 +86,12 @@
     min-height: 1.7em;
 }
 
+.highlightLayer :global(.line.error) {
+    text-decoration: underline wavy var(--l-danger);
+    text-decoration-skip-ink: none;
+    text-underline-offset: 4px;
+}
+
 .highlightLayer :global(.line-number) {
     position: absolute;
     left: calc(var(--gutter) * -1);
@@ -93,6 +99,11 @@
     text-align: right;
     color: var(--l-fg-faint);
     user-select: none;
+}
+
+.highlightLayer :global(.line.error .line-number) {
+    color: var(--l-danger);
+    text-decoration: none;
 }
 
 .highlightLayer :global(.keyword) {
@@ -141,4 +152,38 @@
     border: 3px solid transparent;
     border-radius: 8px;
     background-clip: padding-box;
+}
+
+.errorCount {
+    color: var(--l-danger);
+}
+
+.problems {
+    flex-shrink: 0;
+    max-height: 30%;
+    overflow-y: auto;
+    list-style: none;
+    border-top: 1px solid var(--l-line);
+    background: var(--l-danger-tint);
+    padding: 0.5rem 0;
+}
+
+.problem {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.2rem 1.25rem;
+    font-family: var(--l-mono);
+    font-size: 0.75rem;
+    color: var(--l-fg);
+}
+
+.problemIcon {
+    flex-shrink: 0;
+    color: var(--l-danger);
+}
+
+.problemLine {
+    flex-shrink: 0;
+    color: var(--l-fg-subtle);
 }

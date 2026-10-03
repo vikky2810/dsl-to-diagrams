@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Hexagon, Moon, Sun } from 'lucide-react'
 import { ThemeProvider, useTheme } from '../../contexts/ThemeContext'
 import { parseDSL } from '../../utils/parser'
-import { buildLayout } from '../../utils/layout'
+import { useLayout } from '../../utils/layout'
 import { LiveDiagram } from '../../components/LiveDiagram'
 import styles from './DocsPage.module.css'
 
@@ -41,7 +41,12 @@ api -> users "query"
 connect api -> events "publish"`
 
 const NOTES = `svc api "API"
-text todo "Add a cache here"`
+db users "Users DB"
+text users "Stores credentials"
+text users "10k rows"
+text todo "Add a cache here"
+
+api -> users`
 
 const FULL_EXAMPLE = `# Clients
 ui web "Web App"
@@ -101,7 +106,8 @@ function Code({ children }: { children: string }) {
 
 // A DSL sample with the diagram it produces underneath
 function Example({ dsl }: { dsl: string }) {
-    const layout = useMemo(() => buildLayout(parseDSL(dsl).ast), [dsl])
+    const ast = useMemo(() => parseDSL(dsl).ast, [dsl])
+    const layout = useLayout(ast)
 
     return (
         <figure className={styles.example}>
@@ -242,8 +248,9 @@ function DocsContent() {
                     <section id="notes" className={styles.section}>
                         <h2>Notes</h2>
                         <p>
-                            <InlineCode>text id "Note"</InlineCode> adds a free-standing note, drawn with a dashed border.
-                            The id must be new: if it already belongs to a component, the line is ignored.
+                            <InlineCode>text id "Note"</InlineCode> attaches a note to a component, shown beneath it.
+                            Add as many as you like. If the id isn't a component, the line creates a free-standing
+                            note instead, drawn with a dashed border.
                         </p>
                         <Example dsl={NOTES} />
                     </section>
@@ -261,9 +268,9 @@ function DocsContent() {
                         <ul className={styles.list}>
                             <li>Ids use letters, numbers and underscores, e.g. <InlineCode>auth_v2</InlineCode>.</li>
                             <li>Labels are optional. Without one, the id is shown instead.</li>
-                            <li>Declare both ends of a connection as components before linking them.</li>
+                            <li>Both ends of a connection must be declared as components, anywhere in the file.</li>
                             <li>Declaring the same id twice updates it: the later line sets the type, and the label if one is given.</li>
-                            <li>Lines that don't match any syntax are skipped, so a typo won't break the rest of the diagram.</li>
+                            <li>Lines that don't match any syntax, or connect an id that was never declared, are listed under the editor with their line number. The rest of the diagram still renders.</li>
                             <li>Diagrams flow left to right and redraw as you type.</li>
                         </ul>
                     </section>
