@@ -1,327 +1,144 @@
+/* DSL editor pane. Tokens (--l-*) live in src/index.css */
+
 .panel {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: linear-gradient(180deg,
-            rgba(10, 10, 10, 0.95) 0%,
-            rgba(5, 5, 5, 0.98) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle gradient overlay for depth */
-.panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 150px;
-    background: linear-gradient(180deg,
-            rgba(255, 255, 255, 0.02) 0%,
-            transparent 100%);
-    pointer-events: none;
-    z-index: 0;
+    background: var(--l-bg);
 }
 
 .header {
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background: linear-gradient(90deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            transparent 50%,
-            rgba(255, 255, 255, 0.02) 100%);
-    position: relative;
-    z-index: 1;
-}
-
-/* Animated underline accent */
-.header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: var(--spacing-xl);
-    width: 80px;
-    height: 2px;
-    background: linear-gradient(90deg,
-            var(--color-primary) 0%,
-            var(--color-accent-light) 100%);
-    border-radius: 2px;
-    opacity: 0.6;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 48px;
+    padding: 0 1.25rem;
+    border-bottom: 1px solid var(--l-line);
+    flex-shrink: 0;
 }
 
 .title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-    background: linear-gradient(135deg,
-            var(--color-text-primary) 0%,
-            rgba(255, 255, 255, 0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.title::before {
-    content: '⌘';
-    font-size: 0.9rem;
-    padding: 0.35rem 0.5rem;
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.08) 0%,
-            rgba(255, 255, 255, 0.04) 100%);
-    border-radius: var(--radius-sm);
-    -webkit-text-fill-color: var(--color-primary-light);
+    font-family: var(--l-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--l-fg-muted);
 }
 
 .stats {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.stat {
-    font-size: 0.8rem;
-    color: var(--color-text-tertiary);
-    font-weight: 500;
-    padding: 0.35rem 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all var(--transition-fast);
-}
-
-.stat:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.12);
-}
-
-.statLabel {
-    color: var(--color-text-tertiary);
-    font-weight: 400;
-    margin-right: 0.25rem;
+    font-family: var(--l-mono);
+    font-size: 0.7rem;
+    color: var(--l-fg-subtle);
+    white-space: nowrap;
 }
 
 .editorContainer {
+    --gutter: 3.25rem;
     position: relative;
     flex: 1;
-    border: none;
     overflow: hidden;
     isolation: isolate;
-    background: linear-gradient(135deg,
-            rgba(5, 5, 5, 0.95) 0%,
-            rgba(10, 10, 10, 0.98) 100%);
-    margin: var(--spacing-md);
-    margin-top: var(--spacing-sm);
-    border-radius: var(--radius-lg);
-
+    background: var(--l-bg-sunken);
 }
 
+/* Gutter strip behind the line numbers */
+.editorContainer::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--gutter) - 0.75rem);
+    border-right: 1px solid var(--l-line);
+    pointer-events: none;
+}
 
+.editorContainer:focus-within::before {
+    border-right-color: color-mix(in srgb, var(--l-accent) 45%, transparent);
+}
 
-/* Common settings for both layers */
+/* Both layers must share identical metrics */
 .highlightLayer,
 .editor {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    padding: var(--spacing-sm) var(--spacing-lg);
-    padding-left: calc(48px + var(--spacing-md));
-
-    font-family: 'JetBrains Mono', 'Fira Code', var(--font-mono);
-    font-size: 14px;
-    line-height: 1.6;
+    margin: 0;
+    padding: 1rem 1.25rem 1rem var(--gutter);
+    font-family: var(--l-mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    letter-spacing: 0;
     white-space: pre-wrap;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
     tab-size: 4;
     -moz-tab-size: 4;
-    overflow-wrap: break-word;
-    letter-spacing: 0.01em;
 }
 
 .highlightLayer {
     pointer-events: none;
     overflow: hidden;
-    color: var(--color-text-primary);
+    color: var(--l-fg);
     z-index: 1;
 }
 
 .highlightLayer :global(.line) {
     position: relative;
-    min-height: 1.6em;
-    padding: 0;
-    transition: background var(--transition-fast);
+    min-height: 1.7em;
 }
 
-.highlightLayer :global(.line:hover) {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-/* VS Code style line numbers - clean and simple */
 .highlightLayer :global(.line-number) {
     position: absolute;
-    left: calc(-48px - var(--spacing-xl) + 8px);
-    width: 32px;
-
-    /* Simple, muted appearance like VS Code */
-    color: rgba(133, 133, 150, 0.5);
-    user-select: none;
+    left: calc(var(--gutter) * -1);
+    width: calc(var(--gutter) - 1.5rem);
     text-align: right;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.6;
-
-    transition: color var(--transition-fast);
+    color: var(--l-fg-faint);
+    user-select: none;
 }
 
-/* Subtle highlight on hover */
-.highlightLayer :global(.line:hover .line-number) {
-    color: rgba(133, 133, 150, 0.9);
-}
-
-/* Enhanced syntax highlighting */
 .highlightLayer :global(.keyword) {
-    color: #c586c0;
-    font-weight: 500;
+    color: var(--l-accent-fg);
 }
 
 .highlightLayer :global(.string) {
-    color: #ce9178;
+    color: var(--l-fg-muted);
 }
 
 .highlightLayer :global(.arrow) {
-    color: #569cd6;
-    font-weight: 500;
+    color: var(--l-fg-subtle);
 }
 
 .editor {
     z-index: 2;
-    background: transparent;
     border: none;
     outline: none;
     resize: none;
+    background: transparent;
     color: transparent;
-    caret-color: #aeafad;
+    caret-color: var(--l-accent-fg);
+    overflow: auto;
+}
+
+.editor::selection {
+    background: var(--l-selection);
+    color: transparent;
 }
 
 .editor::placeholder {
-    color: var(--color-text-tertiary);
-    opacity: 0.5;
-    font-style: italic;
+    color: var(--l-fg-faint);
 }
 
-.editor:focus {
-    background: transparent;
-}
-
-/* Custom Scrollbar */
 .editor::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
 
 .editor::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    background: transparent;
 }
 
 .editor::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg,
-            rgba(255, 255, 255, 0.2) 0%,
-            rgba(255, 255, 255, 0.1) 100%);
+    background: var(--l-line-strong);
+    border: 3px solid transparent;
     border-radius: 8px;
-    /* border: 2px solid transparent; */
     background-clip: padding-box;
-}
-
-.editor::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg,
-            rgba(255, 255, 255, 0.3) 0%,
-            rgba(255, 255, 255, 0.2) 100%);
-}
-
-/* Focus state for the whole panel */
-.panel:focus-within .editorContainer {
-    border-color: rgba(255, 255, 255, 0.12);
-
-}
-
-/* Light theme adjustments */
-:global([data-theme="light"]) .panel {
-    background: linear-gradient(180deg,
-            rgba(248, 250, 252, 0.98) 0%,
-            rgba(241, 245, 249, 0.99) 100%);
-
-}
-
-:global([data-theme="light"]) .panel::before {
-    background: linear-gradient(180deg,
-            rgba(0, 0, 0, 0.05) 0%,
-            transparent 100%);
-}
-
-:global([data-theme="light"]) .header {
-    background: linear-gradient(90deg,
-            rgba(0, 0, 0, 0.04) 0%,
-            transparent 50%,
-            rgba(0, 0, 0, 0.03) 100%);
-    border-bottom-color: rgba(0, 0, 0, 0.06);
-}
-
-:global([data-theme="light"]) .title {
-    background: linear-gradient(135deg,
-            rgba(15, 23, 42, 1) 0%,
-            rgba(30, 41, 59, 0.9) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-:global([data-theme="light"]) .stat {
-    background: rgba(0, 0, 0, 0.03);
-    border-color: rgba(0, 0, 0, 0.06);
-    color: var(--color-text-secondary);
-}
-
-:global([data-theme="light"]) .editorContainer {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(248, 250, 252, 0.98) 100%);
-
-}
-
-:global([data-theme="light"]) .highlightLayer :global(.line-number) {
-    color: rgba(100, 100, 120, 0.5);
-}
-
-:global([data-theme="light"]) .highlightLayer :global(.line:hover .line-number) {
-    color: rgba(100, 100, 120, 0.85);
-}
-
-:global([data-theme="light"]) .highlightLayer :global(.keyword) {
-    color: #af00db;
-}
-
-:global([data-theme="light"]) .highlightLayer :global(.string) {
-    color: #a31515;
-}
-
-:global([data-theme="light"]) .highlightLayer :global(.arrow) {
-    color: #0000ff;
-}
-
-:global([data-theme="light"]) .editor {
-    caret-color: #000000;
 }

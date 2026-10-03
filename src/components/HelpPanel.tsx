@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './HelpPanel.module.css'
-import { BookOpen, Sparkles, Lightbulb } from 'lucide-react'
+import { BookOpen, CircleHelp, Lightbulb, Sparkles, X } from 'lucide-react'
 
 export function HelpPanel() {
     const [isOpen, setIsOpen] = useState(false)
@@ -14,20 +14,7 @@ export function HelpPanel() {
                 aria-label="Open documentation"
                 title="VArch DSL Reference"
             >
-                <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9 9a3 3 0 1 1 3 3v2" />
-                    <circle cx="12" cy="17" r="0.5" />
-                </svg>
+                <CircleHelp size={16} strokeWidth={2} />
 
                 <span>Docs</span>
             </button>
@@ -37,7 +24,7 @@ export function HelpPanel() {
                     <div className={styles.modal} onClick={e => e.stopPropagation()}>
                         <div className={styles.modalHeader}>
                             <div className={styles.modalTitle}>
-                                <span className={styles.icon}><BookOpen size={24} /></span>
+                                <span className={styles.icon}><BookOpen size={20} strokeWidth={2} /></span>
                                 <h2>VArch DSL Reference</h2>
                             </div>
                             <button
@@ -45,10 +32,7 @@ export function HelpPanel() {
                                 onClick={() => setIsOpen(false)}
                                 aria-label="Close"
                             >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <line x1="18" y1="6" x2="6" y2="18" />
-                                    <line x1="6" y1="6" x2="18" y2="18" />
-                                </svg>
+                                <X size={18} strokeWidth={2} />
                             </button>
                         </div>
 
@@ -75,7 +59,7 @@ export function HelpPanel() {
                                     <div className={styles.syntaxCard}>
                                         <div className={styles.syntaxHeader}>
                                             <span className={styles.keyword}>db</span>
-                                            <span className={styles.typeBadge} style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)' }}>Database</span>
+                                            <span className={styles.typeBadge}>Database</span>
                                         </div>
                                         <code className={styles.codeExample}>db mydb "User Database"</code>
                                     </div>
@@ -83,7 +67,7 @@ export function HelpPanel() {
                                     <div className={styles.syntaxCard}>
                                         <div className={styles.syntaxHeader}>
                                             <span className={styles.keyword}>svc</span>
-                                            <span className={styles.typeBadge} style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>Service</span>
+                                            <span className={styles.typeBadge}>Service</span>
                                         </div>
                                         <code className={styles.codeExample}>svc api "Auth Service"</code>
                                     </div>
@@ -91,7 +75,7 @@ export function HelpPanel() {
                                     <div className={styles.syntaxCard}>
                                         <div className={styles.syntaxHeader}>
                                             <span className={styles.keyword}>ui</span>
-                                            <span className={styles.typeBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>UI/Frontend</span>
+                                            <span className={styles.typeBadge}>UI/Frontend</span>
                                         </div>
                                         <code className={styles.codeExample}>ui web "React App"</code>
                                     </div>
@@ -99,7 +83,7 @@ export function HelpPanel() {
                                     <div className={styles.syntaxCard}>
                                         <div className={styles.syntaxHeader}>
                                             <span className={styles.keyword}>queue</span>
-                                            <span className={styles.typeBadge} style={{ background: 'linear-gradient(135deg, #ec4899, #db2777)' }}>Message Queue</span>
+                                            <span className={styles.typeBadge}>Message Queue</span>
                                         </div>
                                         <code className={styles.codeExample}>queue mq "RabbitMQ"</code>
                                     </div>

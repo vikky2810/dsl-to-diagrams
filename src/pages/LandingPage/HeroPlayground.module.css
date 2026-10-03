@@ -1,0 +1,206 @@
+/* Hero playground: real DSL input + real layout engine. Tokens come from .landing */
+
+.panel {
+    border: 1px solid var(--l-line);
+    border-radius: var(--l-radius);
+    background: var(--l-bg-raised);
+    box-shadow: inset 0 1px 0 var(--l-highlight), 0 30px 80px -40px var(--l-shadow);
+    overflow: hidden;
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 0 0.875rem 0 1rem;
+    border-bottom: 1px solid var(--l-line);
+}
+
+.filename {
+    font-family: var(--l-mono);
+    font-size: 0.75rem;
+    color: var(--l-fg-subtle);
+}
+
+.liveTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--l-mono);
+    font-size: 0.7rem;
+    color: var(--l-fg-muted);
+}
+
+.liveDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--l-accent);
+}
+
+.resetBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--l-line);
+    border-radius: 6px;
+    background: transparent;
+    backdrop-filter: none;
+    font-family: var(--l-mono);
+    font-size: 0.7rem;
+    color: var(--l-fg-muted);
+    box-shadow: none;
+}
+
+.resetBtn:hover {
+    color: var(--l-fg);
+    border-color: var(--l-line-strong);
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+}
+
+.resetBtn:active {
+    transform: scale(0.97);
+}
+
+/* Code area */
+.code {
+    --code-lh: 1.375rem;
+    --code-pad: 0.875rem;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    height: calc(var(--code-lh) * 8 + var(--code-pad) * 2);
+    border-bottom: 1px solid var(--l-line);
+    background: var(--l-bg-sunken);
+    font-family: var(--l-mono);
+    font-size: 0.8125rem;
+    line-height: var(--code-lh);
+}
+
+.gutter {
+    display: flex;
+    flex-direction: column;
+    padding: var(--code-pad) 0.625rem var(--code-pad) 0;
+    overflow: hidden;
+    text-align: right;
+    color: var(--l-fg-faint);
+    user-select: none;
+}
+
+.editorWrap {
+    position: relative;
+    min-width: 0;
+}
+
+.highlight,
+.input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: var(--code-pad) var(--code-pad) var(--code-pad) 0.5rem;
+    font: inherit;
+    line-height: inherit;
+    letter-spacing: 0;
+    white-space: pre;
+    tab-size: 4;
+    overflow: auto;
+}
+
+.highlight {
+    color: var(--l-fg);
+    pointer-events: none;
+    scrollbar-width: none;
+}
+
+.highlight::-webkit-scrollbar {
+    display: none;
+}
+
+.input {
+    border: 0;
+    outline: none;
+    resize: none;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--l-accent-fg);
+}
+
+.input::selection {
+    background: var(--l-selection);
+    color: transparent;
+}
+
+.editorWrap:focus-within {
+    box-shadow: inset 2px 0 0 var(--l-accent);
+}
+
+.tokKeyword {
+    color: var(--l-accent-fg);
+}
+
+.tokString {
+    color: var(--l-fg-muted);
+}
+
+.tokArrow {
+    color: var(--l-fg-subtle);
+}
+
+.caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    background: var(--l-accent);
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Diagram canvas */
+.canvas {
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-image: radial-gradient(var(--l-dot) 1px, transparent 1px);
+    background-size: 18px 18px;
+}
+
+.empty {
+    max-width: 28ch;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--l-fg-subtle);
+}
+
+.empty code {
+    font-family: var(--l-mono);
+    color: var(--l-fg-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .caret {
+        animation: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .code {
+        font-size: 0.75rem;
+        --code-lh: 1.25rem;
+    }
+
+    .canvas {
+        height: 220px;
+    }
+}

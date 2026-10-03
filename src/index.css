@@ -1,10 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
   /* Typography */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-family: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'JetBrains Mono', monospace;
 
   /* Colors - Dark Theme (Default) - Black & Shades of Black */
   --color-bg-primary: #000000;
@@ -103,6 +101,59 @@
   color-scheme: light;
 }
 
+/* Shared VArch design tokens: dark monochrome with one lime accent (from the app icon) */
+:root {
+  --l-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --l-mono: 'Geist Mono Variable', ui-monospace, 'JetBrains Mono', monospace;
+
+  --l-bg: #0a0a0b;
+  --l-bg-raised: #111113;
+  --l-bg-sunken: #0c0c0e;
+  --l-bg-alt: #0e0e10;
+  --l-fg: #ededee;
+  --l-fg-muted: #a1a1a7;
+  --l-fg-subtle: #7c7c83;
+  --l-fg-faint: #45454b;
+  --l-line: rgba(255, 255, 255, 0.08);
+  --l-line-strong: rgba(255, 255, 255, 0.16);
+  --l-highlight: rgba(255, 255, 255, 0.05);
+  --l-shadow: rgba(0, 0, 0, 0.9);
+  --l-dot: rgba(255, 255, 255, 0.07);
+  --l-selection: rgba(163, 230, 53, 0.25);
+  --l-node-fill: #141416;
+  --l-node-stroke: rgba(255, 255, 255, 0.28);
+
+  --l-accent: #a3e635;
+  --l-accent-hover: #b5ef55;
+  --l-accent-fg: #a3e635;
+  --l-accent-ink: #0a0a0b;
+  --l-accent-tint: rgba(163, 230, 53, 0.07);
+
+  --l-radius: 14px;
+  --l-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme='light'] {
+  --l-bg: #fafafa;
+  --l-bg-raised: #ffffff;
+  --l-bg-sunken: #f4f4f5;
+  --l-bg-alt: #f2f2f3;
+  --l-fg: #111113;
+  --l-fg-muted: #4f4f56;
+  --l-fg-subtle: #6b6b72;
+  --l-fg-faint: #b4b4ba;
+  --l-line: rgba(0, 0, 0, 0.08);
+  --l-line-strong: rgba(0, 0, 0, 0.16);
+  --l-highlight: rgba(255, 255, 255, 0.8);
+  --l-shadow: rgba(20, 20, 30, 0.25);
+  --l-dot: rgba(0, 0, 0, 0.08);
+  --l-selection: rgba(101, 163, 13, 0.25);
+  --l-node-fill: #ffffff;
+  --l-node-stroke: rgba(0, 0, 0, 0.35);
+  --l-accent-fg: #3f6212;
+  --l-accent-tint: rgba(101, 163, 13, 0.08);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -113,13 +164,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: radial-gradient(ellipse at top, #0f0f0f 0%, #000000 50%);
-  background-attachment: fixed;
-  transition: background var(--transition-slow);
-}
-
-[data-theme="light"] body {
-  background: radial-gradient(ellipse at top, #e5e7eb 0%, #f8f9fa 50%);
+  background: var(--l-bg);
 }
 
 #root {

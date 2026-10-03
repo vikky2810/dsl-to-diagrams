@@ -1,296 +1,135 @@
+/* Diagram preview pane. Tokens (--l-*) live in src/index.css */
+
 .container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: linear-gradient(180deg,
-            rgba(10, 10, 10, 0.95) 0%,
-            rgba(5, 5, 5, 0.98) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle gradient overlay for depth - matching EditorPanel */
-.container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 150px;
-    background: linear-gradient(180deg,
-            rgba(255, 255, 255, 0.02) 0%,
-            transparent 100%);
-    pointer-events: none;
-    z-index: 0;
+    background: var(--l-bg);
 }
 
 .controls {
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: var(--spacing-sm);
-    background: linear-gradient(90deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            transparent 50%,
-            rgba(255, 255, 255, 0.02) 100%);
-    position: relative;
-    z-index: 10;
-}
-
-.downloadButton {
-    gap: 0.4rem;
-    padding: 0.5rem 0.9rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.06) 0%,
-            rgba(255, 255, 255, 0.03) 100%);
-    color: var(--color-primary-light);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
     display: flex;
     align-items: center;
-    letter-spacing: normal;
-}
-
-.downloadButton:hover {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 100%);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
-}
-
-.downloadButton:active {
-    transform: translateY(0);
-}
-
-/* Secondary download button variant - same style as primary now */
-.downloadButton:nth-child(2) {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.06) 0%,
-            rgba(255, 255, 255, 0.03) 100%);
-    box-shadow: none;
-}
-
-.downloadButton:nth-child(2):hover {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 100%);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
+    gap: 0.75rem;
+    height: 48px;
+    padding: 0 0.75rem 0 1.25rem;
+    border-bottom: 1px solid var(--l-line);
+    flex-shrink: 0;
 }
 
 .title {
-    font-size: 1.1rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    margin: 0;
-    color: var(--color-text-primary);
+    color: var(--l-fg);
+}
+
+.meta {
+    font-family: var(--l-mono);
+    font-size: 0.7rem;
+    color: var(--l-fg-subtle);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actions {
+    display: flex;
+    gap: 0.375rem;
+    margin-left: auto;
+}
+
+.downloadButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 30px;
+    padding: 0 0.7rem;
+    border: 1px solid var(--l-line-strong);
+    border-radius: 7px;
+    background: transparent;
+    backdrop-filter: none;
+    color: var(--l-fg);
+    font-family: var(--l-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    box-shadow: none;
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.downloadButton svg {
+    color: var(--l-accent-fg);
+}
+
+.downloadButton:hover {
+    border-color: var(--l-fg-subtle);
+    background: var(--l-highlight);
+    box-shadow: none;
+    transform: none;
+}
+
+.downloadButton:active {
+    transform: scale(0.97);
+}
+
+.downloadButton:focus-visible {
+    outline: 2px solid var(--l-accent);
+    outline-offset: 2px;
 }
 
 .svgContainer {
-    position: relative;
     flex: 1;
-    overflow: hidden;
-    isolation: isolate;
-    background: linear-gradient(135deg,
-            rgba(5, 5, 5, 0.95) 0%,
-            rgba(10, 10, 10, 0.98) 100%);
-    margin: var(--spacing-md);
-    margin-top: 0;
-    border-radius: var(--radius-lg);
-    
-}
-
-
-/* Subtle grid pattern for the canvas */
-.svgContainer::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-        radial-gradient(circle at center,
-            rgba(255, 255, 255, 0.02) 1px,
-            transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-    opacity: 0.8;
-}
-
-.svg {
-    display: block;
-    position: relative;
-    z-index: 1;
-}
-
-.nodes .nodeRect {
-    transition: all var(--transition-base);
-    cursor: pointer;
-}
-
-.nodes .nodeRect:hover {
-    filter: brightness(1.25) saturate(1.1);
-    stroke-width: 3;
-}
-
-.edges line {
-    transition: all var(--transition-base);
-}
-
-.edges line:hover {
-    stroke-width: 3;
-    opacity: 1;
+    min-height: 0;
+    padding: 1.5rem;
+    background-color: var(--l-bg-sunken);
+    background-image: radial-gradient(var(--l-dot) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
 /* Empty state */
 .emptyState {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    gap: 0.5rem;
+    padding: 2rem;
     text-align: center;
-    padding: var(--spacing-2xl);
-    position: relative;
-    z-index: 2;
+    background-color: var(--l-bg-sunken);
+    background-image: radial-gradient(var(--l-dot) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
 .emptyIcon {
-    font-size: 4rem;
-    margin-bottom: var(--spacing-lg);
-    opacity: 0.6;
-    filter: grayscale(0.2);
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
+    color: var(--l-fg-faint);
+    margin-bottom: 0.5rem;
 }
 
 .emptyTitle {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 var(--spacing-sm) 0;
-    background: linear-gradient(135deg,
-            var(--color-text-primary) 0%,
-            rgba(255, 255, 255, 0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--l-fg);
 }
 
 .emptyText {
-    color: var(--color-text-secondary);
-    margin: 0;
-    max-width: 320px;
-    line-height: 1.6;
-    font-size: 0.95rem;
+    max-width: 30ch;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--l-fg-subtle);
 }
 
-/* Light theme adjustments - matching EditorPanel */
-:global([data-theme="light"]) .svgContainer {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(248, 250, 252, 0.98) 100%);
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        0 4px 24px rgba(0, 0, 0, 0.08);
+.emptyText code {
+    font-family: var(--l-mono);
+    font-size: 0.8125rem;
+    color: var(--l-accent-fg);
 }
 
-:global([data-theme="light"]) .svgContainer::before {
-    background: linear-gradient(135deg,
-            rgba(0, 0, 0, 0.06) 0%,
-            transparent 50%,
-            rgba(0, 0, 0, 0.03) 100%);
-}
+@media (max-width: 480px) {
+    .meta {
+        display: none;
+    }
 
-:global([data-theme="light"]) .svgContainer::after {
-    background-image:
-        radial-gradient(circle at center,
-            rgba(0, 0, 0, 0.04) 1px,
-            transparent 1px);
-}
-
-:global([data-theme="light"]) .emptyTitle {
-    background: linear-gradient(135deg,
-            rgba(15, 23, 42, 1) 0%,
-            rgba(51, 65, 85, 0.9) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-/* Light theme for container - matching EditorPanel */
-:global([data-theme="light"]) .container {
-    background: linear-gradient(180deg,
-            rgba(248, 250, 252, 0.98) 0%,
-            rgba(241, 245, 249, 0.99) 100%);
-}
-
-:global([data-theme="light"]) .container::before {
-    background: linear-gradient(180deg,
-            rgba(0, 0, 0, 0.05) 0%,
-            transparent 100%);
-}
-
-/* Light theme for controls */
-:global([data-theme="light"]) .controls {
-    background: linear-gradient(90deg,
-            rgba(0, 0, 0, 0.04) 0%,
-            transparent 50%,
-            rgba(0, 0, 0, 0.03) 100%);
-}
-
-:global([data-theme="light"]) .downloadButton {
-    background: linear-gradient(135deg,
-            rgba(51, 65, 85, 0.9) 0%,
-            rgba(30, 41, 59, 0.95) 100%);
-    color: #ffffff;
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-:global([data-theme="light"]) .downloadButton:hover {
-    background: linear-gradient(135deg,
-            rgba(30, 41, 59, 0.95) 0%,
-            rgba(15, 23, 42, 1) 100%);
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-:global([data-theme="light"]) .downloadButton:nth-child(2) {
-    background: linear-gradient(135deg,
-            rgba(100, 116, 139, 0.9) 0%,
-            rgba(71, 85, 105, 0.95) 100%);
-}
-
-:global([data-theme="light"]) .downloadButton:nth-child(2):hover {
-    background: linear-gradient(135deg,
-            rgba(71, 85, 105, 0.95) 0%,
-            rgba(51, 65, 85, 1) 100%);
+    .svgContainer {
+        padding: 0.75rem;
+    }
 }

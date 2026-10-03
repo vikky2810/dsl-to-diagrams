@@ -1,0 +1,104 @@
+/* Renders a dagre layout. Colours come from the --l-* tokens in index.css */
+.diagram {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.nodeBody {
+    fill: var(--l-node-fill);
+    stroke: var(--l-node-stroke);
+    stroke-width: 1.25;
+}
+
+.nodeBack {
+    fill: var(--l-bg-raised);
+    stroke: var(--l-line-strong);
+    stroke-width: 1;
+}
+
+.nodeDetail {
+    stroke: var(--l-line-strong);
+    stroke-width: 1;
+}
+
+.nodeNote {
+    stroke-dasharray: 4 3;
+}
+
+.nodeLabel {
+    font-family: var(--l-sans);
+    font-size: 13px;
+    font-weight: 550;
+    fill: var(--l-fg);
+}
+
+.nodeType {
+    font-family: var(--l-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--l-fg-subtle);
+}
+
+.edgePath {
+    fill: none;
+    stroke: var(--l-fg-subtle);
+    stroke-width: 1.25;
+}
+
+.arrowHead {
+    fill: var(--l-fg-subtle);
+}
+
+.edgeLabel rect {
+    fill: var(--l-bg-raised);
+    stroke: var(--l-line-strong);
+    stroke-width: 1;
+}
+
+.edgeLabel text {
+    font-family: var(--l-mono);
+    font-size: 11px;
+    fill: var(--l-fg-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .animated .node {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: nodeIn 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .animated .edgePath {
+        stroke-dasharray: 1;
+        animation: edgeDraw 520ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+
+    .animated .edgeLabel {
+        animation: fadeIn 300ms ease 360ms both;
+    }
+}
+
+@keyframes nodeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+}
+
+@keyframes edgeDraw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+}
+

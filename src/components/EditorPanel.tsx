@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import styles from './EditorPanel.module.css'
 
 type EditorPanelProps = {
@@ -7,17 +7,10 @@ type EditorPanelProps = {
 }
 
 export function EditorPanel({ value, onChange }: EditorPanelProps) {
-    const [lineCount, setLineCount] = useState(0)
-    const [charCount, setCharCount] = useState(0)
+    const lineCount = value.split('\n').length
+    const charCount = value.length
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const highlightLayerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const lines = value.split('\n').length
-        const chars = value.length
-        setLineCount(lines)
-        setCharCount(chars)
-    }, [value])
 
     useEffect(() => {
         const textarea = textareaRef.current
@@ -119,15 +112,10 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
     return (
         <div className={styles.panel}>
             <div className={styles.header}>
-                <h2 className={styles.title}>DSL Editor</h2>
-                <div className={styles.stats}>
-                    <span className={styles.stat}>
-                        <span className={styles.statLabel}>Lines:</span> {lineCount}
-                    </span>
-                    <span className={styles.stat}>
-                        <span className={styles.statLabel}>Chars:</span> {charCount}
-                    </span>
-                </div>
+                <h2 className={styles.title}>architecture.varch</h2>
+                <span className={styles.stats}>
+                    {lineCount} {lineCount === 1 ? 'line' : 'lines'}, {charCount} chars
+                </span>
             </div>
 
             <div className={styles.editorContainer}>
@@ -141,7 +129,8 @@ export function EditorPanel({ value, onChange }: EditorPanelProps) {
                     className={styles.editor}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    placeholder="Enter your DSL here..."
+                    placeholder={'svc api "API Gateway"'}
+                    aria-label="VArch DSL editor"
                     spellCheck={false}
                 />
             </div>

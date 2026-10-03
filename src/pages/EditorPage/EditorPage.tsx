@@ -24,12 +24,12 @@ function EditorHeader() {
         <header className={styles.header}>
             <div className={styles.headerLeft}>
                 <Link to="/" className={styles.backLink}>
-                    <ArrowLeft size={20} />
-                    Back to Home
+                    <ArrowLeft size={16} strokeWidth={2} />
+                    Home
                 </Link>
             </div>
             <div className={styles.headerCenter}>
-                <span className={styles.logoIcon}><Hexagon size={24} /></span>
+                <span className={styles.logoIcon}><Hexagon size={18} strokeWidth={2} /></span>
                 <span className={styles.logoText}>VArch Editor</span>
             </div>
             <div className={styles.headerRight}>
@@ -40,9 +40,9 @@ function EditorHeader() {
                     aria-label="Toggle theme"
                 >
                     {theme === 'dark' ? (
-                        <Sun size={18} />
+                        <Sun size={16} strokeWidth={2} />
                     ) : (
-                        <Moon size={18} />
+                        <Moon size={16} strokeWidth={2} />
                     )}
                 </button>
             </div>
