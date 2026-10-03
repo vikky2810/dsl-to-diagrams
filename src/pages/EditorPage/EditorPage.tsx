@@ -4,9 +4,8 @@ import { parseDSL } from '../../utils/parser'
 import { ThemeProvider, useTheme } from '../../contexts/ThemeContext'
 import { EditorPanel } from '../../components/EditorPanel'
 import { DiagramViewer } from '../../components/DiagramViewer'
-import { HelpPanel } from '../../components/HelpPanel'
 import styles from './EditorPage.module.css'
-import { Hexagon, Sun, Moon, ArrowLeft } from 'lucide-react'
+import { Hexagon, Sun, Moon, ArrowLeft, ArrowUpRight, BookOpen } from 'lucide-react'
 
 // Example DSL text
 const EXAMPLE_DSL = `db db1 "UserDB"
@@ -33,7 +32,17 @@ function EditorHeader() {
                 <span className={styles.logoText}>VArch Editor</span>
             </div>
             <div className={styles.headerRight}>
-                <HelpPanel />
+                <a
+                    href="/docs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.docsLink}
+                    title="DSL reference (opens in a new tab)"
+                >
+                    <BookOpen size={15} strokeWidth={2} />
+                    Docs
+                    <ArrowUpRight size={13} strokeWidth={2} className={styles.docsLinkArrow} />
+                </a>
                 <button
                     className={styles.themeToggle}
                     onClick={toggleTheme}

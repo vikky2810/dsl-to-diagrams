@@ -53,6 +53,7 @@ export function LandingPage() {
                     <div className={styles.navLinks}>
                         <a href="#features" className={styles.navLink}>Features</a>
                         <a href="#dsl" className={styles.navLink}>DSL</a>
+                        <Link to="/docs" className={styles.navLink}>Docs</Link>
                         <Link to="/app" className={styles.navCta}>{CTA_LABEL}</Link>
                     </div>
                 </div>

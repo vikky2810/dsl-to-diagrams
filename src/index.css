@@ -101,8 +101,10 @@
   color-scheme: light;
 }
 
-/* Shared VArch design tokens: dark monochrome with one lime accent (from the app icon) */
-:root {
+/* Shared VArch design tokens: dark monochrome with one lime accent (from the app icon).
+   [data-theme='dark'] lets an element (e.g. a diagram being exported) opt back into the dark palette. */
+:root,
+[data-theme='dark'] {
   --l-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
   --l-mono: 'Geist Mono Variable', ui-monospace, 'JetBrains Mono', monospace;
 

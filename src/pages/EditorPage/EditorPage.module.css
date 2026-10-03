@@ -81,6 +81,44 @@
     outline-offset: 2px;
 }
 
+.docsLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 34px;
+    padding: 0 0.65rem 0 0.75rem;
+    border: 1px solid var(--l-line-strong);
+    border-radius: 8px;
+    color: var(--l-fg);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 150ms ease, background 150ms ease;
+}
+
+.docsLink svg {
+    color: var(--l-fg-muted);
+}
+
+.docsLink:hover {
+    border-color: var(--l-fg-subtle);
+    background: var(--l-highlight);
+}
+
+.docsLink .docsLinkArrow {
+    color: var(--l-fg-subtle);
+    transition: transform 200ms var(--l-ease);
+}
+
+.docsLink:hover .docsLinkArrow {
+    transform: translate(1px, -1px);
+}
+
+.docsLink:focus-visible {
+    outline: 2px solid var(--l-accent);
+    outline-offset: 2px;
+}
+
 .themeToggle {
     display: inline-flex;
     align-items: center;
